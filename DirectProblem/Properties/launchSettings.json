@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "DirectProblem": {
+      "commandName": "Project",
+      "workingDirectory": "..\\DirectProblem\\"
+    }
+  }
+}
