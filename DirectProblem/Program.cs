@@ -24,24 +24,27 @@ var gridBuilder2D = new GridBuilder2D();
 //-127.08331406406634
 //-129.06444524208246
 
-var grid = gridBuilder2D
-   // .SetRAxis(new AxisSplitParameter(
-   //        new[] { 0, 0.1, 20.1, 100.1 },
+var grid = gridBuilder2D   
+   //.SetRAxis(new AxisSplitParameter(
+   //        new[] { 0, 0.1, 5.1, 20.1, 100.1 },
    //        new UniformSplitter(2),
-   //        new ProportionalSplitter(25, Math.Pow(1.05, 0.5)),
-   //        new ProportionalSplitter(5, Math.Pow(1.95, 0.5))
+   //        new UniformSplitter(25),
+   //        new ProportionalSplitter(10, 1.55),
+   //        new ProportionalSplitter(5, 1.95)
    //    )
    //)
    //.SetZAxis(new AxisSplitParameter(
-   //        new[] { -260d, -160d, -129d, -127d, -100d, 0d },
-   //        new ProportionalSplitter(10, Math.Pow(0.55, 0.5)),
-   //        new ProportionalSplitter(30, Math.Pow(0.55, 0.125)),
-   //        new UniformSplitter(5),
-   //        new ProportionalSplitter(30, Math.Pow(1.95, 0.125)),
-   //        new ProportionalSplitter(10, Math.Pow(1.95, 0.5))
+   //        new[] { -260d, -160d, -135, -129d, -127d, -125, -100d, 0d },
+   //        new ProportionalSplitter(5, 0.05),
+   //        new ProportionalSplitter(10, Math.Pow(0.05, 0.125)),
+   //        new UniformSplitter(30),
+   //        new UniformSplitter(10),
+   //        new UniformSplitter(10),
+   //        new ProportionalSplitter(10, Math.Pow(1.95, 0.125)),
+   //        new ProportionalSplitter(5, 1.95)
    //    )
    //)
-   .SetRAxis(new AxisSplitParameter(
+    .SetRAxis(new AxisSplitParameter(
            new[] { 0, 0.1, 5.1, 20.1, 100.1 },
            new UniformSplitter(2),
            new UniformSplitter(25),
@@ -50,52 +53,52 @@ var grid = gridBuilder2D
        )
    )
    .SetZAxis(new AxisSplitParameter(
-           new[] { -260d, -160d, -135, -129d, -127d, -125, -100d, 0d },
+           new[] { -260d, -160d, -135, -134d, -131d, -125, -100d, 0d },
            new ProportionalSplitter(5, 0.05),
            new ProportionalSplitter(10, Math.Pow(0.05, 0.125)),
+           new UniformSplitter(5),
+           new UniformSplitter(15),
            new UniformSplitter(30),
-           new UniformSplitter(10),
-           new UniformSplitter(10),
            new ProportionalSplitter(10, Math.Pow(1.95, 0.125)),
            new ProportionalSplitter(5, 1.95)
        )
    )
    //вариант с новым разбиением
-   //.SetAreas(new Area[]
-   //{
-   //    //скважина
-   //    new(0, new Node2D(0d, -260d), new Node2D(0.1, 0d)),
-   //    //первый слой
-   //    new(1, new Node2D(0.1, -100d), new Node2D(100.1, 0d)),
-   //    //второй слой
-   //    new(2, new Node2D(0.1, -127d), new Node2D(100.1, -100d)),
-   //    //искомый элемент
-   //    new(4, new Node2D(0.1, -129d), new Node2D(20.1, -127d)),
-   //    //третий слой
-   //    new(2, new Node2D(20.1, -129d), new Node2D(100.1, -127d)),
-   //    //четвертый слой
-   //    new(2, new Node2D(0.1, -160d), new Node2D(100.1, -129d)),
-   //    //пятый слой
-   //    new(1, new Node2D(0.1, -260d), new Node2D(100.1, -160d))
-   //})
-   //однородное
    .SetAreas(new Area[]
    {
        //скважина
-       new(6, new Node2D(0d, -260d), new Node2D(0.1, 0d)),
+       new(0, new Node2D(0d, -260d), new Node2D(0.1, 0d)),
        //первый слой
-       new(6, new Node2D(0.1, -100d), new Node2D(100.1, 0d)),
+       new(1, new Node2D(0.1, -100d), new Node2D(100.1, 0d)),
        //второй слой
-       new(6, new Node2D(0.1, -127d), new Node2D(100.1, -100d)),
+       new(2, new Node2D(0.1, -131d), new Node2D(100.1, -100d)),
        //искомый элемент
-       new(6, new Node2D(0.1, -129d), new Node2D(20.1, -127d)),
+       new(4, new Node2D(0.1, -134d), new Node2D(20.1, -131d)),
        //третий слой
-       new(6, new Node2D(20.1, -129d), new Node2D(100.1, -127d)),
+       new(2, new Node2D(20.1, -134d), new Node2D(100.1, -131d)),
        //четвертый слой
-       new(6, new Node2D(0.1, -160d), new Node2D(100.1, -129d)),
+       new(2, new Node2D(0.1, -160d), new Node2D(100.1, -134d)),
        //пятый слой
-       new(6, new Node2D(0.1, -260d), new Node2D(100.1, -160d))
+       new(1, new Node2D(0.1, -260d), new Node2D(100.1, -160d))
    })
+   //однородное
+   //.SetAreas(new Area[]
+   //{
+   //    //скважина
+   //    new(6, new Node2D(0d, -260d), new Node2D(0.1, 0d)),
+   //    //первый слой
+   //    new(6, new Node2D(0.1, -100d), new Node2D(100.1, 0d)),
+   //    //второй слой
+   //    new(6, new Node2D(0.1, -127d), new Node2D(100.1, -100d)),
+   //    //искомый элемент
+   //    new(6, new Node2D(0.1, -129d), new Node2D(20.1, -127d)),
+   //    //третий слой
+   //    new(6, new Node2D(20.1, -129d), new Node2D(100.1, -127d)),
+   //    //четвертый слой
+   //    new(6, new Node2D(0.1, -160d), new Node2D(100.1, -129d)),
+   //    //пятый слой
+   //    new(6, new Node2D(0.1, -260d), new Node2D(100.1, -160d))
+   //})
    .Build();
 
 var gridO = new GridIO("../DirectProblem/Results/");
@@ -154,7 +157,7 @@ for (var i = 0; i < sources.Length; i++)
         .AssembleSLAE()
         .Solve();
 
-    if (i == 28)
+    if (i == 31)
     {
         resultO.WriteResult(solution, "v2.dat");
     }
