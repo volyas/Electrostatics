@@ -24,8 +24,60 @@ var gridBuilder2D = new GridBuilder2D();
 //-127.08331406406634
 //-129.06444524208246
 
-var grid = gridBuilder2D   
+var grid = gridBuilder2D
    //.SetRAxis(new AxisSplitParameter(
+   //        new[] { 0, 0.1, 10.1, 20.1, 400.1 },
+   //        new UniformSplitter(10),
+   //        new UniformSplitter(50),
+   //        new ProportionalSplitter(15, 1.95),
+   //        new ProportionalSplitter(5, 1.55)
+   //    )
+   //)
+   //.SetZAxis(new AxisSplitParameter(
+   //        new[] { -260d, -160d, -135d,  -125d, -100d, 0d },
+   //        new ProportionalSplitter(5, 1/1.5),
+   //        new ProportionalSplitter(5, 1/1.95),
+   //        new UniformSplitter(50),
+   //        new ProportionalSplitter(5, 1.95),
+   //        new ProportionalSplitter(5, 1.5)
+   //    )
+   //)
+   //более менее сетка по точности, но считает долго
+   //.SetRAxis(new AxisSplitParameter(
+   //        new[] { 0, 0.1, 2.1, 20.1, 100.1 },
+   //        new UniformSplitter(10),
+   //        new UniformSplitter(35),
+   //        new ProportionalSplitter(15, 1.95),
+   //        new ProportionalSplitter(5, 1.55)
+   //    )
+   //)
+   //.SetZAxis(new AxisSplitParameter(
+   //        new[] { -260d, -160d, -135d, -125d, -100d, 0d },
+   //        new ProportionalSplitter(5, 1 / 1.5),
+   //        new ProportionalSplitter(5, 1 / 1.95),
+   //        new UniformSplitter(100),
+   //        new ProportionalSplitter(5, 1.95),
+   //        new ProportionalSplitter(5, 1.5)
+   //    )
+   //)
+   .SetRAxis(new AxisSplitParameter(
+           new[] { 0, 0.1, 2.1, 20.1, 100.1 },
+           new UniformSplitter(2),
+           new UniformSplitter(35),
+           new ProportionalSplitter(15, 1.95),
+           new ProportionalSplitter(5, 1.55)
+       )
+   )
+   .SetZAxis(new AxisSplitParameter(
+           new[] { -260d, -160d, -135d, -125d, -100d, 0d },
+           new ProportionalSplitter(5, 1 / 1.5),
+           new ProportionalSplitter(5, 1 / 1.95),
+           new UniformSplitter(150),
+           new ProportionalSplitter(5, 1.95),
+           new ProportionalSplitter(5, 1.5)
+       )
+   )
+   //// .SetRAxis(new AxisSplitParameter(
    //        new[] { 0, 0.1, 5.1, 20.1, 100.1 },
    //        new UniformSplitter(2),
    //        new UniformSplitter(25),
@@ -34,71 +86,42 @@ var grid = gridBuilder2D
    //    )
    //)
    //.SetZAxis(new AxisSplitParameter(
-   //        new[] { -260d, -160d, -135, -129d, -127d, -125, -100d, 0d },
+   //        new[] { -260d, -160d, -135, -130d, -129d, -125, -100d, 0d },
    //        new ProportionalSplitter(5, 0.05),
    //        new ProportionalSplitter(10, Math.Pow(0.05, 0.125)),
-   //        new UniformSplitter(30),
-   //        new UniformSplitter(10),
-   //        new UniformSplitter(10),
+   //        new UniformSplitter(25),
+   //        new UniformSplitter(5),
+   //        new UniformSplitter(20),
    //        new ProportionalSplitter(10, Math.Pow(1.95, 0.125)),
    //        new ProportionalSplitter(5, 1.95)
    //    )
    //)
-    .SetRAxis(new AxisSplitParameter(
-           new[] { 0, 0.1, 5.1, 20.1, 100.1 },
-           new UniformSplitter(2),
-           new UniformSplitter(25),
-           new ProportionalSplitter(10, 1.55),
-           new ProportionalSplitter(5, 1.95)
-       )
-   )
-   .SetZAxis(new AxisSplitParameter(
-           new[] { -260d, -160d, -135, -134d, -131d, -125, -100d, 0d },
-           new ProportionalSplitter(5, 0.05),
-           new ProportionalSplitter(10, Math.Pow(0.05, 0.125)),
-           new UniformSplitter(5),
-           new UniformSplitter(15),
-           new UniformSplitter(30),
-           new ProportionalSplitter(10, Math.Pow(1.95, 0.125)),
-           new ProportionalSplitter(5, 1.95)
-       )
-   )
    //вариант с новым разбиением
-   .SetAreas(new Area[]
-   {
-       //скважина
-       new(0, new Node2D(0d, -260d), new Node2D(0.1, 0d)),
-       //первый слой
-       new(1, new Node2D(0.1, -100d), new Node2D(100.1, 0d)),
-       //второй слой
-       new(2, new Node2D(0.1, -131d), new Node2D(100.1, -100d)),
-       //искомый элемент
-       new(4, new Node2D(0.1, -134d), new Node2D(20.1, -131d)),
-       //третий слой
-       new(2, new Node2D(20.1, -134d), new Node2D(100.1, -131d)),
-       //четвертый слой
-       new(2, new Node2D(0.1, -160d), new Node2D(100.1, -134d)),
-       //пятый слой
-       new(1, new Node2D(0.1, -260d), new Node2D(100.1, -160d))
-   })
-   //однородное
    //.SetAreas(new Area[]
    //{
    //    //скважина
-   //    new(6, new Node2D(0d, -260d), new Node2D(0.1, 0d)),
+   //    new(0, new Node2D(0d, -260d), new Node2D(0.1, 0d)),
    //    //первый слой
-   //    new(6, new Node2D(0.1, -100d), new Node2D(100.1, 0d)),
+   //    new(1, new Node2D(0.1, -100d), new Node2D(100.1, 0d)),
    //    //второй слой
-   //    new(6, new Node2D(0.1, -127d), new Node2D(100.1, -100d)),
+   //    new(2, new Node2D(0.1, -129d), new Node2D(100.1, -100d)),
    //    //искомый элемент
-   //    new(6, new Node2D(0.1, -129d), new Node2D(20.1, -127d)),
+   //    new(4, new Node2D(0.1, -130d), new Node2D(20.1, -129d)),
    //    //третий слой
-   //    new(6, new Node2D(20.1, -129d), new Node2D(100.1, -127d)),
+   //    new(2, new Node2D(20.1, -130d), new Node2D(100.1, -129d)),
    //    //четвертый слой
-   //    new(6, new Node2D(0.1, -160d), new Node2D(100.1, -129d)),
+   //    new(2, new Node2D(0.1, -160d), new Node2D(100.1, -130d)),
    //    //пятый слой
-   //    new(6, new Node2D(0.1, -260d), new Node2D(100.1, -160d))
+   //    new(1, new Node2D(0.1, -260d), new Node2D(100.1, -160d))
    //})
+   //однородное
+   .SetAreas(new Area[]
+   {
+       //скважина
+       new(6, new Node2D(0d, -260d), new Node2D(0.1, 0d)),
+       //первый слой
+       new(6, new Node2D(0.1, -260d), new Node2D(400.1, 0d))
+   })
    .Build();
 
 var gridO = new GridIO("../DirectProblem/Results/");
@@ -140,50 +163,55 @@ var globalAssembler = new GlobalAssembler<Node2D>(grid, new MatrixPortraitBuilde
 
 var firstBoundaryProvider = new FirstBoundaryProvider(grid);
 
-var firstConditions = firstBoundaryProvider.GetConditions(42, 80);
+var firstConditions = firstBoundaryProvider.GetConditions(80, 70);
 //var firstConditions = firstBoundaryProvider.GetConditions(12, 440);
 
 var directProblemSolver = new DirectProblemSolver(grid, globalAssembler, firstConditions, receiverLines);
 
 var resultO = new ResultIO("../DirectProblem/Results/");
 
-for (var i = 0; i < sources.Length; i++)
-{
-    var solution = directProblemSolver
-        .SetSource(sources[i])
-        ////.SetSource(sources[33])
-        //.SetSource(sources[30])
-        //.SetSource(new Source(new Node2D(0.05, -128), 1))
-        .AssembleSLAE()
-        .Solve();
+//for (var i = 0; i < sources.Length; i++)
+//{
+//    var solution = directProblemSolver
+//        .SetSource(sources[i])
+//        ////.SetSource(sources[33])
+//        //.SetSource(sources[30])
+//        //.SetSource(new Source(new Node2D(0.05, -128), 1))
+//        .AssembleSLAE()
+//        .Solve();
 
-    if (i == 31)
-    {
-        resultO.WriteResult(solution, "v2.dat");
-    }
+//    if (i == 31)
+//    {
+//        resultO.WriteResult(solution, "v2.dat");
+//    }
 
-    var femSolution = new FEMSolution(grid, solution, localBasisFunctionsProvider);
+//    var femSolution = new FEMSolution(grid, solution, localBasisFunctionsProvider);
 
-    var potentialM = femSolution.Calculate(receiverLines[i].PointM);
-    var potentialN = femSolution.Calculate(receiverLines[i].PointN);
+//    var potentialM = femSolution.Calculate(receiverLines[i].PointM);
+//    var potentialN = femSolution.Calculate(receiverLines[i].PointN);
 
-    //var potential = femSolution.Calculate(new Node2D(0.1, -130));
+//    //var potential = femSolution.Calculate(new Node2D(0.1, -130));
 
-    potentialDifferences[i] = potentialM - potentialN;
+//    potentialDifferences[i] = potentialM - potentialN;
 
-    CourseHolder.GetInfo(i, 0);
-}
+//    CourseHolder.GetInfo(i, 0);
+//}
 
 //для вычисления значения в точке
 
-//var solution = directProblemSolver
-//    .SetSource(new Source(new Node2D(0.05, -128), 1))
-//    .AssembleSLAE()
-//    .Solve();
+var solution = directProblemSolver
+    .SetSource(new Source(new Node2D(0.05, -131), 1))
+    .AssembleSLAE()
+    .Solve();
 
-//var femSolution = new FEMSolution(grid, solution, localBasisFunctionsProvider);
+var femSolution = new FEMSolution(grid, solution, localBasisFunctionsProvider);
 
-//var potential = femSolution.Calculate(new Node2D(0.1, -133));
+var potential = new double[9];
+for (var i = 0; i < 9; i++)
+{
+    potential[i] = femSolution.Calculate(new Node2D(0.1, -135 + i));
+    Console.WriteLine(potential[i]);
+}
 
 //
 
