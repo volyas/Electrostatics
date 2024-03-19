@@ -61,18 +61,18 @@ var grid = gridBuilder2D
    //    )
    //)
    .SetRAxis(new AxisSplitParameter(new[]
-        { 0, 0.1, 2.1, 20.1, 100.1 },
+        { 0, 0.1, 1.1, 20.1, 100.1 },
         new UniformSplitter(4),
-        new UniformSplitter(80),
-        new ProportionalSplitter(15, 1.35),
-        new ProportionalSplitter(5, 1.55)
+        new UniformSplitter(40),
+        new ProportionalSplitter(15, 1.45),
+        new ProportionalSplitter(5, 1.35)
     ))
 .SetZAxis(new AxisSplitParameter(new[]
         { -260d, -160d, -135d, -125d, -100d, 0d },
         new ProportionalSplitter(5, 1 / 1.5),
-        new ProportionalSplitter(10, 1 / 1.55),
+        new ProportionalSplitter(10, 1 / 1.85),
         new UniformSplitter(400),
-        new ProportionalSplitter(10, 1.55),
+        new ProportionalSplitter(10, 1.85),
         new ProportionalSplitter(5, 1.5))
 )
    //// .SetRAxis(new AxisSplitParameter(
@@ -161,7 +161,7 @@ var globalAssembler = new GlobalAssembler<Node2D>(grid, new MatrixPortraitBuilde
 
 var firstBoundaryProvider = new FirstBoundaryProvider(grid);
 
-var firstConditions = firstBoundaryProvider.GetConditions(104, 430);
+var firstConditions = firstBoundaryProvider.GetConditions(64, 430);
 //var firstConditions = firstBoundaryProvider.GetConditions(12, 440);
 
 var directProblemSolver = new DirectProblemSolver(grid, globalAssembler, firstConditions, receiverLines);
@@ -201,7 +201,7 @@ var solution = directProblemSolver
     .SetSource(new Source(new Node2D(0.05, -131), 1))
     .AssembleSLAE()
     .Solve();
-
+resultO.WriteResult(solution, "v2.dat");
 var femSolution = new FEMSolution(grid, solution, localBasisFunctionsProvider);
 
 var potential = new double[9];
