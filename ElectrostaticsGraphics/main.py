@@ -11,7 +11,8 @@ plt.plot(points, potentialDifferences, label='potentialDifferences')
 plt.xlabel('Z')
 plt.ylabel('Diff')
 
-plt.xlim(-135, -125)
+plt.xlim(-135, -127)
+##plt.xlim(-100, -159)
 
 plt.legend()
 

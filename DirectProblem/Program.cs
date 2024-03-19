@@ -25,20 +25,39 @@ var gridBuilder2D = new GridBuilder2D();
 //-129.06444524208246
 
 var grid = gridBuilder2D
-    .SetRAxis(new AxisSplitParameter(
-           new[] { 0, 0.1, 20.1, 100.1 },
+   // .SetRAxis(new AxisSplitParameter(
+   //        new[] { 0, 0.1, 20.1, 100.1 },
+   //        new UniformSplitter(2),
+   //        new ProportionalSplitter(25, Math.Pow(1.05, 0.5)),
+   //        new ProportionalSplitter(5, Math.Pow(1.95, 0.5))
+   //    )
+   //)
+   //.SetZAxis(new AxisSplitParameter(
+   //        new[] { -260d, -160d, -129d, -127d, -100d, 0d },
+   //        new ProportionalSplitter(10, Math.Pow(0.55, 0.5)),
+   //        new ProportionalSplitter(30, Math.Pow(0.55, 0.125)),
+   //        new UniformSplitter(5),
+   //        new ProportionalSplitter(30, Math.Pow(1.95, 0.125)),
+   //        new ProportionalSplitter(10, Math.Pow(1.95, 0.5))
+   //    )
+   //)
+   .SetRAxis(new AxisSplitParameter(
+           new[] { 0, 0.1, 5.1, 20.1, 100.1 },
            new UniformSplitter(2),
-           new ProportionalSplitter(25, Math.Pow(1.05, 0.5)),
-           new ProportionalSplitter(5, Math.Pow(1.95, 0.5))
+           new UniformSplitter(25),
+           new ProportionalSplitter(10, 1.55),
+           new ProportionalSplitter(5, 1.95)
        )
    )
    .SetZAxis(new AxisSplitParameter(
-           new[] { -260d, -160d, -129d, -127d, -100d, 0d },
-           new ProportionalSplitter(10, Math.Pow(0.55, 0.5)),
-           new ProportionalSplitter(30, Math.Pow(0.55, 0.125)),
-           new UniformSplitter(5),
-           new ProportionalSplitter(30, Math.Pow(1.95, 0.125)),
-           new ProportionalSplitter(10, Math.Pow(1.95, 0.5))
+           new[] { -260d, -160d, -135, -129d, -127d, -125, -100d, 0d },
+           new ProportionalSplitter(5, 0.05),
+           new ProportionalSplitter(10, Math.Pow(0.05, 0.125)),
+           new UniformSplitter(30),
+           new UniformSplitter(10),
+           new UniformSplitter(10),
+           new ProportionalSplitter(10, Math.Pow(1.95, 0.125)),
+           new ProportionalSplitter(5, 1.95)
        )
    )
    //вариант с новым разбиением
@@ -118,50 +137,50 @@ var globalAssembler = new GlobalAssembler<Node2D>(grid, new MatrixPortraitBuilde
 
 var firstBoundaryProvider = new FirstBoundaryProvider(grid);
 
-var firstConditions = firstBoundaryProvider.GetConditions(32, 85);
+var firstConditions = firstBoundaryProvider.GetConditions(42, 80);
 //var firstConditions = firstBoundaryProvider.GetConditions(12, 440);
 
 var directProblemSolver = new DirectProblemSolver(grid, globalAssembler, firstConditions, receiverLines);
 
 var resultO = new ResultIO("../DirectProblem/Results/");
 
-//for (var i = 0; i < sources.Length; i++)
-//{
-//    var solution = directProblemSolver
-//        .SetSource(sources[i])
-//        ////.SetSource(sources[33])
-//        //.SetSource(sources[30])
-//        //.SetSource(new Source(new Node2D(0.05, -128), 1))
-//        .AssembleSLAE()
-//        .Solve();
+for (var i = 0; i < sources.Length; i++)
+{
+    var solution = directProblemSolver
+        .SetSource(sources[i])
+        ////.SetSource(sources[33])
+        //.SetSource(sources[30])
+        //.SetSource(new Source(new Node2D(0.05, -128), 1))
+        .AssembleSLAE()
+        .Solve();
 
-//    if (i == 28)
-//    {
-//        resultO.WriteResult(solution, "v2.dat");
-//    }
+    if (i == 28)
+    {
+        resultO.WriteResult(solution, "v2.dat");
+    }
 
-//    var femSolution = new FEMSolution(grid, solution, localBasisFunctionsProvider);
+    var femSolution = new FEMSolution(grid, solution, localBasisFunctionsProvider);
 
-//    var potentialM = femSolution.Calculate(receiverLines[i].PointM);
-//    var potentialN = femSolution.Calculate(receiverLines[i].PointN);
+    var potentialM = femSolution.Calculate(receiverLines[i].PointM);
+    var potentialN = femSolution.Calculate(receiverLines[i].PointN);
 
-//    //var potential = femSolution.Calculate(new Node2D(0.1, -130));
+    //var potential = femSolution.Calculate(new Node2D(0.1, -130));
 
-//    potentialDifferences[i] = potentialM - potentialN;
+    potentialDifferences[i] = potentialM - potentialN;
 
-//    CourseHolder.GetInfo(i, 0);
-//}
+    CourseHolder.GetInfo(i, 0);
+}
 
 //для вычисления значения в точке
 
-var solution = directProblemSolver
-    .SetSource(new Source(new Node2D(0.05, -128), 1))
-    .AssembleSLAE()
-    .Solve();
+//var solution = directProblemSolver
+//    .SetSource(new Source(new Node2D(0.05, -128), 1))
+//    .AssembleSLAE()
+//    .Solve();
 
-var femSolution = new FEMSolution(grid, solution, localBasisFunctionsProvider);
+//var femSolution = new FEMSolution(grid, solution, localBasisFunctionsProvider);
 
-var potential = femSolution.Calculate(new Node2D(0.1, -125));
+//var potential = femSolution.Calculate(new Node2D(0.1, -133));
 
 //
 
