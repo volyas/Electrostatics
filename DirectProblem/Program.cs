@@ -25,41 +25,7 @@ var gridBuilder2D = new GridBuilder2D();
 //-129.06444524208246
 
 var grid = gridBuilder2D
-   //.SetRAxis(new AxisSplitParameter(
-   //        new[] { 0, 0.1, 10.1, 20.1, 400.1 },
-   //        new UniformSplitter(10),
-   //        new UniformSplitter(50),
-   //        new ProportionalSplitter(15, 1.95),
-   //        new ProportionalSplitter(5, 1.55)
-   //    )
-   //)
-   //.SetZAxis(new AxisSplitParameter(
-   //        new[] { -260d, -160d, -135d,  -125d, -100d, 0d },
-   //        new ProportionalSplitter(5, 1/1.5),
-   //        new ProportionalSplitter(5, 1/1.95),
-   //        new UniformSplitter(50),
-   //        new ProportionalSplitter(5, 1.95),
-   //        new ProportionalSplitter(5, 1.5)
-   //    )
-   //)
-   //более менее сетка по точности, но считает долго
-   //.SetRAxis(new AxisSplitParameter(
-   //        new[] { 0, 0.1, 2.1, 20.1, 100.1 },
-   //        new UniformSplitter(10),
-   //        new UniformSplitter(35),
-   //        new ProportionalSplitter(15, 1.95),
-   //        new ProportionalSplitter(5, 1.55)
-   //    )
-   //)
-   //.SetZAxis(new AxisSplitParameter(
-   //        new[] { -260d, -160d, -135d, -125d, -100d, 0d },
-   //        new ProportionalSplitter(5, 1 / 1.5),
-   //        new ProportionalSplitter(5, 1 / 1.95),
-   //        new UniformSplitter(100),
-   //        new ProportionalSplitter(5, 1.95),
-   //        new ProportionalSplitter(5, 1.5)
-   //    )
-   //)
+   
    .SetRAxis(new AxisSplitParameter(new[]
         { 0, 0.1, 1.1, 20.1, 100.1 },
         new UniformSplitter(4),
@@ -70,30 +36,11 @@ var grid = gridBuilder2D
 .SetZAxis(new AxisSplitParameter(new[]
         { -260d, -160d, -135d, -125d, -100d, 0d },
         new ProportionalSplitter(5, 1 / 1.5),
-        new ProportionalSplitter(10, 1 / 1.85),
-        new UniformSplitter(400),
-        new ProportionalSplitter(10, 1.85),
+        new ProportionalSplitter(15, 1 / 1.48),
+        new UniformSplitter(390),
+        new ProportionalSplitter(15, 1.48),
         new ProportionalSplitter(5, 1.5))
 )
-   //// .SetRAxis(new AxisSplitParameter(
-   //        new[] { 0, 0.1, 5.1, 20.1, 100.1 },
-   //        new UniformSplitter(2),
-   //        new UniformSplitter(25),
-   //        new ProportionalSplitter(10, 1.55),
-   //        new ProportionalSplitter(5, 1.95)
-   //    )
-   //)
-   //.SetZAxis(new AxisSplitParameter(
-   //        new[] { -260d, -160d, -135, -130d, -129d, -125, -100d, 0d },
-   //        new ProportionalSplitter(5, 0.05),
-   //        new ProportionalSplitter(10, Math.Pow(0.05, 0.125)),
-   //        new UniformSplitter(25),
-   //        new UniformSplitter(5),
-   //        new UniformSplitter(20),
-   //        new ProportionalSplitter(10, Math.Pow(1.95, 0.125)),
-   //        new ProportionalSplitter(5, 1.95)
-   //    )
-   //)
    //вариант с новым разбиением
    //.SetAreas(new Area[]
    //{
