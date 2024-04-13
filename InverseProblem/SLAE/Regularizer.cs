@@ -33,9 +33,9 @@ public class Regularizer
     {
         var alpha = CalculateAlpha(equation.Matrix);
 
-        alpha = FindPossibleAlpha(equation, alpha, trueCurrents, out var residual);
+        alpha = FindPossibleAlpha(equation, alpha, out var residual);
 
-        alpha = FindBestAlpha(equation, alpha, trueCurrents, residual);
+        alpha = FindBestAlpha(equation, alpha, residual);
 
         return alpha;
     }

@@ -14,6 +14,7 @@ using DirectProblem.IO;
 using System.Reflection.Metadata;
 using InverseProblem.Assembling;
 using DirectProblem.Core.Base;
+using InverseProblem;
 
 // инициализируем и задаём истинную сетку
 var gridBuilder2D = new GridBuilder2D();
@@ -96,16 +97,17 @@ for (var i = 0; i < 59; i++)
     );
     centersZ[i] = (sources[i].Point.Z + receivesrLine[i].PointN.Z) / 2;
 }
-var directProblemSolver = new DirectProblemSolver(trueGrid, globalAssembler, firstConditions, receivesrLine);
+var directProblemSolver = new DirectProblemSolver();
 var resultO = new ResultIO("../DirectProblem/Results/");
 // ищем решение для каждого источника
 var noise = 1.05d;
 for (var i = 0; i < sources.Length; i++)
 {
     var trueSolution = directProblemSolver
+        .SetGrid(trueGrid)
+        .SetMaterials(trueSigmas)
         .SetSource(sources[i])
-        //.SetSource(new Source(new Node2D(0.05, -128), 1))
-        .AssembleSLAE()
+        .SetFirstConditions(firstConditions)
         .Solve();
 
     if (i == 31)

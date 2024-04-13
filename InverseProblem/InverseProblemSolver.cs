@@ -24,7 +24,7 @@ public class InverseProblemSolver
 
     private static readonly GaussElimination GaussElimination = new();
     private static readonly Regularizer Regularizer = new(GaussElimination);
-    private static readonly DirectProblemSolver DirectProblemSolver = new(globalAssembler, _firstConditions);
+    private static readonly DirectProblemSolver DirectProblemSolver;
     private readonly GridBuilder2D _gridBuilder2D;
     private SLAEAssembler _slaeAssembler;
     private Source[] _sources;
@@ -36,11 +36,14 @@ public class InverseProblemSolver
     private double[] _truePotentialDifferences;
 
     private Area[] _areas;
-    private List<double> _sigmas;
-    private List<double> _previousSigmas;
+    private double[] _sigmas;
+    private double[] _previousSigmas;
 
     private FirstConditionValue[] _firstConditions;
 
+    private Matrix _bufferMatrix;
+    private Vector _bufferVector;
+    private Vector _residualBufferVector;
     public InverseProblemSolver(GridBuilder2D gridBuilder2D)
     {
         _gridBuilder2D = gridBuilder2D;
@@ -74,7 +77,7 @@ public class InverseProblemSolver
     }
 
     public InverseProblemSolver SetDirectProblemParameters(Area[] areas,
-        List<double> sigmas, FirstConditionValue[] firstConditions)
+        double[] sigmas, FirstConditionValue[] firstConditions)
     {
         _areas = areas;
         _sigmas = sigmas;
@@ -116,11 +119,11 @@ public class InverseProblemSolver
         var residual = 1d;
         Equation<Matrix> equation = null!;
 
-        for (var i = 1; i <= MethodsConfig.MaxIterations && residual > MethodsConfig.Eps; i++)
+        for (var i = 1; i <= MethodsConfig.MaxIterations && residual > MethodsConfig.EpsDouble; i++)
         {
-            equation = _slaeAssembler.BuildEquation();
+            equation = _slaeAssembler.Build();
 
-            var alpha = Regularizer.Regularize(equation, _trueValues);
+            var alpha = Regularizer.Regularize(equation);
 
             Matrix.CreateIdentityMatrix(_bufferMatrix);
 

@@ -26,7 +26,7 @@ public class SLAEAssembler {
     private readonly double[][] _derivativesPotentialDifferences;
 
     private Area[] _areas;
-    private List<double> _sigmas;
+    private double[] _sigmas;
     private FirstConditionValue[] _firstConditions;
     private readonly Equation<Matrix> _equation;
 
@@ -42,7 +42,7 @@ public class SLAEAssembler {
             Vector initialValues,
             double[] truePotentialDifferences,
             Area[] areas,
-            List<double> sigmas,
+            double[] sigmas,
             FirstConditionValue[] firstConditions)
     {
         _gridBuilder2D = gridBuilder2D;
@@ -127,8 +127,10 @@ public class SLAEAssembler {
         for (var i = 0; i < sources.Length; i++)
         {
             var solution = directProblemSolver
+                .SetGrid(_grid)
+                .SetMaterials(_sigmas)
                 .SetSource(sources[i])
-                .AssembleSLAE()
+                .SetFirstConditions(_firstConditions)
                 .Solve();
 
             _femSolution = new FEMSolution(_grid, solution, _localBasisFunctionsProvider);
@@ -172,9 +174,7 @@ public class SLAEAssembler {
                     (_derivativesPotentialDifferences[i][j] - _potentialDifferences[j]) / delta;
             }
         }
-    }
-
-    
+    }    
 
     private void AssembleSLAE()
     {

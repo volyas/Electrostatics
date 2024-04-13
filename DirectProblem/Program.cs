@@ -1,4 +1,5 @@
 ﻿using DirectProblem;
+using DirectProblem.Core.Boundary;
 using DirectProblem.Core.GridComponents;
 using DirectProblem.FEM;
 using DirectProblem.GridGenerator;
@@ -127,19 +128,21 @@ var firstBoundaryProvider = new FirstBoundaryProvider(grid);
 var firstConditions = firstBoundaryProvider.GetConditions(64, 430);
 //var firstConditions = firstBoundaryProvider.GetConditions(12, 440);
 
-var directProblemSolver = new DirectProblemSolver(globalAssembler, firstConditions);
+var directProblemSolver = new DirectProblemSolver();
 
 var resultO = new ResultIO("../DirectProblem/Results/");
 
 for (var i = 0; i < sources.Length; i++)
 {
     var solution = directProblemSolver
-        .SetSource(sources[i])
-        ////.SetSource(sources[33])
-        //.SetSource(sources[30])
-        //.SetSource(new Source(new Node2D(0.05, -128), 1))
-        .AssembleSLAE()
-        .Solve();
+                .SetGrid(grid)
+                .SetMaterials(materialFactory)
+                .SetSource(sources[i])
+                ////.SetSource(sources[33])
+                //.SetSource(sources[30])
+                //.SetSource(new Source(new Node2D(0.05, -128), 1))
+                .SetFirstConditions(firstConditions)
+                .Solve();
 
     if (i == 31)
     {
