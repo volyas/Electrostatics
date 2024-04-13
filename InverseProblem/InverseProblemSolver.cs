@@ -29,7 +29,6 @@ public class InverseProblemSolver
     private SLAEAssembler _slaeAssembler;
     private Source[] _sources;
     private ReceiverLine[] _receiversLines;
-
     private Parameter[] _parameters;
     private Vector _trueValues;
     private Vector _initialValues;
@@ -37,7 +36,9 @@ public class InverseProblemSolver
     private double[] _truePotentialDifferences;
 
     private Area[] _areas;
-    private MaterialFactory _sigmas;
+    private List<double> _sigmas;
+    private List<double> _previousSigmas;
+
     private FirstConditionValue[] _firstConditions;
 
     public InverseProblemSolver(GridBuilder2D gridBuilder2D)
@@ -57,9 +58,9 @@ public class InverseProblemSolver
         return this;
     }
 
-    public InverseProblemSolver SetParameters(Parameter[] parameters, Vector trueValues, Vector initialValues)
+    public InverseProblemSolver SetParameters(Parameter[] currentParameters, Vector trueValues, Vector initialValues)
     {
-        _parameters = parameters;
+        _parameters = currentParameters;
         _trueValues = trueValues;
         _initialValues = initialValues;
 
@@ -152,8 +153,10 @@ public class InverseProblemSolver
 
     private void UpdateParameters(Vector vector)
     {
+
         for (var i = 0; i < _parameters.Length; i++)
         {
+            _previousSigmas[i] = _sigmas[i]; //фиксируем предыдущее значение сигм
             _slaeAssembler.SetParameter(_parameters[i], vector[i]);
         }
     }

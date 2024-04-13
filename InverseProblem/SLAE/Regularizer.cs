@@ -1,5 +1,6 @@
 ﻿using DirectProblem.Core.Base;
 using DirectProblem.Core.Global;
+using InverseProblem.Assembling;
 
 namespace InverseProblem.SLAE;
 
@@ -14,18 +15,6 @@ public class Regularizer
     {
         _gaussElimination = gaussElimination;
     }
-
-    public double Regularize(Equation<Matrix> equation, Vector trueCurrents)
-    {
-        var alpha = CalculateAlpha(equation.Matrix);
-
-        alpha = FindPossibleAlpha(equation, alpha, trueCurrents, out var residual);
-
-        alpha = FindBestAlpha(equation, alpha, trueCurrents, residual);
-
-        return alpha;
-    }
-
     private double CalculateAlpha(Matrix matrix)
     {
         var n = matrix.CountRows;
@@ -40,6 +29,17 @@ public class Regularizer
 
         return alpha;
     }
+    public double Regularize(Equation<Matrix> equation, Vector trueCurrents)
+    {
+        var alpha = CalculateAlpha(equation.Matrix);
+
+        alpha = FindPossibleAlpha(equation, alpha, trueCurrents, out var residual);
+
+        alpha = FindBestAlpha(equation, alpha, trueCurrents, residual);
+
+        return alpha;
+    }
+       
 
     private void AssembleSLAE(Equation<Matrix> equation, double alpha, Vector trueCurrents)
     {
@@ -47,11 +47,7 @@ public class Regularizer
 
         Matrix.Sum(equation.Matrix, Matrix.Multiply(alpha, BufferMatrix, BufferMatrix), BufferMatrix);
 
-        Vector.Subtract(
-            equation.RightPart, Vector.Multiply(
-                alpha, Vector.Subtract(equation.Solution, trueCurrents, BufferVector),
-                BufferVector),
-            BufferVector);
+        BufferVector = equation.RightPart; // нет разности в правой части, потому что равенство
     }
 
     private double CalculateResidual(Equation<Matrix> equation, double alpha, Vector trueCurrents)
@@ -74,6 +70,28 @@ public class Regularizer
             .Norm;
     }
 
+    private double FindLocalConstraint(List<double> sigmas, List<double> previousSigmas, double alpha)
+    {
+        var ratio = 0d;
+
+        for (int i = 0; i < sigmas.Count; i++)
+        {
+            ratio = sigmas[i] / previousSigmas[i];
+            ratio = Math.Max(ratio, 1d / ratio);
+
+            if (ratio >= 2)
+            {
+                alpha *= 1.5;
+                break;
+            }
+        }
+
+        return alpha;
+    }
+    private double FindGlobalConstraint()
+    {
+
+    }
     private double FindPossibleAlpha(Equation<Matrix> equation, double alpha, Vector trueCurrents, out double residual)
     {
         for (; ; )
