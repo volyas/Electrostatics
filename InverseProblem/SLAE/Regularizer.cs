@@ -29,7 +29,7 @@ public class Regularizer
 
         return alpha;
     }
-    public double Regularize(Equation<Matrix> equation, Vector trueCurrents)
+    public double Regularize(Equation<Matrix> equation)
     {
         var alpha = CalculateAlpha(equation.Matrix);
 
@@ -41,7 +41,7 @@ public class Regularizer
     }
        
 
-    private void AssembleSLAE(Equation<Matrix> equation, double alpha, Vector trueCurrents)
+    private void AssembleSLAE(Equation<Matrix> equation, double alpha)
     {
         Matrix.CreateIdentityMatrix(BufferMatrix);
 
@@ -50,7 +50,7 @@ public class Regularizer
         BufferVector = equation.RightPart; // нет разности в правой части, потому что равенство
     }
 
-    private double CalculateResidual(Equation<Matrix> equation, double alpha, Vector trueCurrents)
+    private double CalculateResidual(Equation<Matrix> equation, double alpha)
     {
         Matrix.CreateIdentityMatrix(BufferMatrix);
 
@@ -58,11 +58,7 @@ public class Regularizer
 
         Matrix.Multiply(BufferMatrix, BufferVector, ResidualBufferVector);
 
-        Vector.Subtract(
-            equation.RightPart, Vector.Multiply(
-                alpha, Vector.Subtract(equation.Solution, trueCurrents, BufferVector),
-                BufferVector),
-            BufferVector);
+        BufferVector = equation.RightPart; // нет разности в правой части, потому что равенство
 
         return Vector.Subtract(
             BufferVector,
@@ -88,21 +84,36 @@ public class Regularizer
 
         return alpha;
     }
-    private double FindGlobalConstraint()
+    private double FindGlobalConstraint(Equation<Matrix> equation, double alpha, List<double> sigmas)
     {
+        AssembleSLAE(equation, alpha);
 
+        BufferVector = _gaussElimination.Solve(BufferMatrix, BufferVector);
+
+        var sum = 0d;
+        for (int i = 0; i < sigmas.Count; i++)
+        {
+            sum = sigmas[i] + BufferVector[i];            
+
+            if (sum is >= 5 or <= 1e-3)
+            {
+                alpha *= 1.5;
+                break;
+            }
+        }
+        return alpha;
     }
-    private double FindPossibleAlpha(Equation<Matrix> equation, double alpha, Vector trueCurrents, out double residual)
+    private double FindPossibleAlpha(Equation<Matrix> equation, double alpha, out double residual)
     {
         for (; ; )
         {
             try
             {
-                AssembleSLAE(equation, alpha, trueCurrents);
+                AssembleSLAE(equation, alpha);
 
                 BufferVector = _gaussElimination.Solve(BufferMatrix, BufferVector);
 
-                residual = CalculateResidual(equation, alpha, trueCurrents);
+                residual = CalculateResidual(equation, alpha);
 
                 break;
             }
@@ -116,7 +127,7 @@ public class Regularizer
         return alpha;
     }
 
-    private double FindBestAlpha(Equation<Matrix> equation, double alpha, Vector trueCurrents, double residual)
+    private double FindBestAlpha(Equation<Matrix> equation, double alpha, double residual)
     {
         var ratio = 1d;
 
@@ -124,11 +135,11 @@ public class Regularizer
         {
             try
             {
-                AssembleSLAE(equation, alpha, trueCurrents);
+                AssembleSLAE(equation, alpha);
 
                 BufferVector = _gaussElimination.Solve(BufferMatrix, BufferVector);
 
-                var currentResidual = CalculateResidual(equation, alpha, trueCurrents);
+                var currentResidual = CalculateResidual(equation, alpha);
 
                 ratio = currentResidual / residual;
             }

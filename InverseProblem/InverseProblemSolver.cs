@@ -58,9 +58,9 @@ public class InverseProblemSolver
         return this;
     }
 
-    public InverseProblemSolver SetParameters(Parameter[] currentParameters, Vector trueValues, Vector initialValues)
+    public InverseProblemSolver SetParameters(Parameter[] parameters, Vector trueValues, Vector initialValues)
     {
-        _parameters = currentParameters;
+        _parameters = parameters;
         _trueValues = trueValues;
         _initialValues = initialValues;
 
@@ -74,7 +74,7 @@ public class InverseProblemSolver
     }
 
     public InverseProblemSolver SetDirectProblemParameters(Area[] areas,
-        MaterialFactory sigmas, FirstConditionValue[] firstConditions)
+        List<double> sigmas, FirstConditionValue[] firstConditions)
     {
         _areas = areas;
         _sigmas = sigmas;
