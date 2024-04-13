@@ -28,9 +28,7 @@ public class FEMSolution
 
             var basisFunctions = _basisFunctionsProvider.GetBilinearFunctions(element);
 
-            var sum = 0d;
-
-            sum += element.NodesIndexes
+            var sum = element.NodesIndexes
                 .Select((t, i) => _solution[t] * basisFunctions[i].Calculate(point))
                 .Sum();
 

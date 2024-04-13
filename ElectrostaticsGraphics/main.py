@@ -12,6 +12,7 @@ plt.xlabel('Z')
 plt.ylabel('Diff')
 
 plt.xlim(-135, -127)
+plt.ylim(0.5, 1.5)
 ##plt.xlim(-100, -159)
 
 plt.legend()
