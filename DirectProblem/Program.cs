@@ -114,14 +114,6 @@ for (var i = 0; i < 59; i++)
 
 var localBasisFunctionsProvider = new LocalBasisFunctionsProvider(grid, new LinearFunctionsProvider());
 
-var localAssembler =
-    new LocalAssembler(
-        new LocalMatrixAssembler(grid),
-        materialFactory);
-
-var inserter = new Inserter();
-var globalAssembler = new GlobalAssembler<Node2D>(grid, new MatrixPortraitBuilder(), localAssembler, inserter,
-    new GaussExcluder(), localBasisFunctionsProvider);
 
 var firstBoundaryProvider = new FirstBoundaryProvider(grid);
 
@@ -135,7 +127,6 @@ var resultO = new ResultIO("../DirectProblem/Results/");
 for (var i = 0; i < sources.Length; i++)
 {
     var solution = directProblemSolver
-                .SetGlobalAssembler(globalAssembler)
                 .SetGrid(grid)
                 .SetMaterials(materialFactory)
                 .SetSource(sources[i])

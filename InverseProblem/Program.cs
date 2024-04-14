@@ -62,41 +62,43 @@ var trueSigmas = new MaterialFactory
 
 
 
-var localAssembler = new LocalAssembler(
-        new LocalMatrixAssembler(trueGrid),
-        trueSigmas
-        );
 
-var inserter = new Inserter();
 var localBasisFunctionsProvider = new LocalBasisFunctionsProvider(trueGrid, new LinearFunctionsProvider());
-var globalAssembler = new GlobalAssembler<Node2D>(
-    trueGrid,
-    new MatrixPortraitBuilder(),
-    localAssembler,
-    inserter,
-    new GaussExcluder(),
-    localBasisFunctionsProvider
-    );
 
 var firstBoundaryProvider = new FirstBoundaryProvider(trueGrid);
 var firstConditions = firstBoundaryProvider.GetConditions(64, 430);
 
 // инициализируем источники и приёмники
-var current = 1d;
-var sources = new Source[59];
-var receivesrLine = new ReceiverLine[59];
-var truePotentialDifferences = new double[59];
-var centersZ = new double[59];
+////var current = 1d;
+////var sources = new Source[59];
+////var receivesrLine = new ReceiverLine[59];
+////var truePotentialDifferences = new double[59];
+////var centersZ = new double[59];
 
-for (var i = 0; i < 59; i++)
+var current = 1d;
+var sources = new Source[1];
+var receivesrLine = new ReceiverLine[1];
+var truePotentialDifferences = new double[1];
+var centersZ = new double[1];
+for (var i = 0; i < 1; i++)
 {
-    sources[i] = new Source(new Node2D(0.05, -100 - 1 * i), current);
+    sources[i] = new Source(new Node2D(0.05, -131 - 1 * i), current);
     receivesrLine[i] = new ReceiverLine(
         new Node2D(sources[i].Point.R, sources[i].Point.Z - 1),
         new Node2D(sources[i].Point.R, sources[i].Point.Z - 2)
     );
     centersZ[i] = (sources[i].Point.Z + receivesrLine[i].PointN.Z) / 2;
 }
+
+//for (var i = 0; i < 59; i++)
+//{
+//    sources[i] = new Source(new Node2D(0.05, -100 - 1 * i), current);
+//    receivesrLine[i] = new ReceiverLine(
+//        new Node2D(sources[i].Point.R, sources[i].Point.Z - 1),
+//        new Node2D(sources[i].Point.R, sources[i].Point.Z - 2)
+//    );
+//    centersZ[i] = (sources[i].Point.Z + receivesrLine[i].PointN.Z) / 2;
+//}
 var directProblemSolver = new DirectProblemSolver();
 var resultO = new ResultIO("../DirectProblem/Results/");
 // ищем решение для каждого источника
@@ -110,10 +112,10 @@ for (var i = 0; i < sources.Length; i++)
         .SetFirstConditions(firstConditions)
         .Solve();
 
-    if (i == 31)
-    {
-        resultO.WriteResult(trueSolution, "v2.dat");
-    }
+    //if (i == 31)
+    //{
+    //    resultO.WriteResult(trueSolution, "v2.dat");
+    //}
 
     var femSolution = new FEMSolution(trueGrid, trueSolution, localBasisFunctionsProvider);
 
@@ -126,7 +128,7 @@ for (var i = 0; i < sources.Length; i++)
 
     CourseHolder.GetInfo(i, 0);
 }
-Console.WriteLine("DirectProblem solved!");
+Console.WriteLine("DirectProblem solved!\n");
 // задаём параметры области для обратной задачи
 var areas = new Area[]
 {
@@ -174,4 +176,8 @@ for (var i = 0; i < sources.Length; i++)
     //}
 
     CourseHolder.GetInfo(i, 0);
+    foreach (var value in solution)
+    {
+        Console.WriteLine(value);
+    }
 }

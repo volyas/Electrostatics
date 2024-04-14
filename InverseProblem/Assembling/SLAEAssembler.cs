@@ -137,18 +137,18 @@ public class SLAEAssembler {
         DirectProblemSolver directProblemSolver
         )
     {
-            var solution = directProblemSolver
-                .SetGrid(_grid)
-                .SetMaterials(_sigmas)
-                .SetSource(source)
-                .SetFirstConditions(_firstConditions)
-                .Solve();
+        var solution = directProblemSolver
+            .SetGrid(_grid)
+            .SetMaterials(_sigmas)
+            .SetSource(source)
+            .SetFirstConditions(_firstConditions)
+            .Solve();
         _localBasisFunctionsProvider = new LocalBasisFunctionsProvider(_grid, LinearFunctionsProvider);
         _femSolution = new FEMSolution(_grid, solution, _localBasisFunctionsProvider);
-            var potentialM = _femSolution.Calculate(receiversLine.PointM);
-            var potentialN = _femSolution.Calculate(receiversLine.PointN);
+        var potentialM = _femSolution.Calculate(receiversLine.PointM);
+        var potentialN = _femSolution.Calculate(receiversLine.PointN);
 
-            potentialDifference = potentialM - potentialN;
+        potentialDifference = potentialM - potentialN;
         
     }
     private void CalculateDerivatives()

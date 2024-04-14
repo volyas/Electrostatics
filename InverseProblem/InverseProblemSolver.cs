@@ -24,7 +24,7 @@ public class InverseProblemSolver
 
     private static readonly GaussElimination GaussElimination = new();
     private static readonly Regularizer Regularizer = new(GaussElimination);
-    private static readonly DirectProblemSolver DirectProblemSolver;
+    private static readonly DirectProblemSolver DirectProblemSolver = new();
     private readonly GridBuilder2D _gridBuilder2D;
     private SLAEAssembler _slaeAssembler;
     private Source _source;

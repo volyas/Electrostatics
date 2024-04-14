@@ -11,12 +11,17 @@ using DirectProblem.TwoDimensional.Assembling;
 using DirectProblem.TwoDimensional.Assembling.Global;
 using DirectProblem.TwoDimensional.Assembling.Local;
 using DirectProblem.TwoDimensional.Parameters;
+using DirectProblem.FEM.Assembling.Local;
 
 namespace DirectProblem;
 
 public class DirectProblemSolver
 {
     private static readonly MCG MCG = new(new LLTPreconditioner(), new LLTSparse());
+    private static readonly MatrixPortraitBuilder MatrixPortraitBuilder = new();
+    private static readonly GaussExcluder GaussExcluder = new();
+    private static readonly LinearFunctionsProvider LinearFunctionsProvider = new();
+    private static readonly Inserter Inserter = new();
     private GlobalAssembler<Node2D> _globalAssembler;
     private Grid<Node2D> _grid;
     private MaterialFactory _materialFactory;
@@ -24,12 +29,24 @@ public class DirectProblemSolver
     private Source _sources;
 
     private Equation<SymmetricSparseMatrix> _equation;
+    private LocalAssembler _localAssembler;
+    private LocalBasisFunctionsProvider _localBasisFunctionsProvider;
 
-
-    public DirectProblemSolver SetGlobalAssembler(GlobalAssembler<Node2D> globalAssembler)
+    private void InitLocal()
     {
-        _globalAssembler = globalAssembler;
-        return this;
+        _localBasisFunctionsProvider = new LocalBasisFunctionsProvider(_grid, LinearFunctionsProvider);
+        _localAssembler = new LocalAssembler
+            (
+                new LocalMatrixAssembler(_grid),
+                _materialFactory
+            );
+    }
+    
+
+    private void InitGlobal()
+    {
+        _globalAssembler = new GlobalAssembler<Node2D>(_grid, MatrixPortraitBuilder, _localAssembler, Inserter,
+            GaussExcluder, _localBasisFunctionsProvider);
     }
     public DirectProblemSolver SetGrid(Grid<Node2D> grid)
     {
@@ -61,8 +78,9 @@ public class DirectProblemSolver
 
     public Vector Solve()
     {
+        InitLocal();
+        InitGlobal();
         AssembleSLAE();
-
         var solution = MCG.Solve(_equation);
 
         return solution;
