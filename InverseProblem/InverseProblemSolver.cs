@@ -123,7 +123,7 @@ public class InverseProblemSolver
         {
             equation = _slaeAssembler.Build();
 
-            var alpha = Regularizer.Regularize(equation);
+            var alpha = Regularizer.Regularize(equation, _sigmas, _previousSigmas);
 
             Matrix.CreateIdentityMatrix(_bufferMatrix);
 

@@ -29,13 +29,13 @@ public class Regularizer
 
         return alpha;
     }
-    public double Regularize(Equation<Matrix> equation)
+    public double Regularize(Equation<Matrix> equation, double[] sigmas, double[] previousSigmas)
     {
         var alpha = CalculateAlpha(equation.Matrix);
 
-        alpha = FindPossibleAlpha(equation, alpha, out var residual);
+        alpha = FindLocalConstraint(sigmas, previousSigmas, alpha);
 
-        alpha = FindBestAlpha(equation, alpha, residual);
+        alpha = FindGlobalConstraint(equation, alpha, sigmas);
 
         return alpha;
     }
@@ -66,11 +66,11 @@ public class Regularizer
             .Norm;
     }
 
-    private double FindLocalConstraint(List<double> sigmas, List<double> previousSigmas, double alpha)
+    private double FindLocalConstraint(double[] sigmas, double[] previousSigmas, double alpha)
     {
         var ratio = 0d;
 
-        for (int i = 0; i < sigmas.Count; i++)
+        for (int i = 0; i < sigmas.Length; i++)
         {
             ratio = sigmas[i] / previousSigmas[i];
             ratio = Math.Max(ratio, 1d / ratio);
@@ -84,14 +84,14 @@ public class Regularizer
 
         return alpha;
     }
-    private double FindGlobalConstraint(Equation<Matrix> equation, double alpha, List<double> sigmas)
+    private double FindGlobalConstraint(Equation<Matrix> equation, double alpha, double[] sigmas)
     {
         AssembleSLAE(equation, alpha);
 
         BufferVector = _gaussElimination.Solve(BufferMatrix, BufferVector);
 
         var sum = 0d;
-        for (int i = 0; i < sigmas.Count; i++)
+        for (int i = 0; i < sigmas.Length; i++)
         {
             sum = sigmas[i] + BufferVector[i];            
 
