@@ -23,7 +23,7 @@ public class SLAEAssembler {
     private readonly Parameter[] _parameters;
     private readonly double _truePotentialDifference;
     private double _weightsSquare;
-    private readonly double _potentialDifference;
+    private double _potentialDifference;
     private readonly double[] _derivativesPotentialDifferences;
 
     private Area[] _areas;
@@ -128,23 +128,18 @@ public class SLAEAssembler {
             .Build();
 
     }
-    private void CalculatePotentialDifferences(
-        double potentialDifference,
-        Source source,
-        ReceiverLine receiversLine,
-        DirectProblemSolver directProblemSolver
-        )
+    private void CalculatePotentialDifferences(ref double potentialDifference)
     {
-        var solution = directProblemSolver
+        var solution = _directProblemSolver
             .SetGrid(_grid)
             .SetMaterials(_sigmas)
-            .SetSource(source)
+            .SetSource(_source)
             .SetFirstConditions(_firstConditions)
             .Solve();
         _localBasisFunctionsProvider = new LocalBasisFunctionsProvider(_grid, LinearFunctionsProvider);
         _femSolution = new FEMSolution(_grid, solution, _localBasisFunctionsProvider);
-        var potentialM = _femSolution.Calculate(receiversLine.PointM);
-        var potentialN = _femSolution.Calculate(receiversLine.PointN);
+        var potentialM = _femSolution.Calculate(_receiversLine.PointM);
+        var potentialN = _femSolution.Calculate(_receiversLine.PointN);
 
         potentialDifference = potentialM - potentialN;
         
@@ -153,12 +148,7 @@ public class SLAEAssembler {
     {
         //решаем прямую задачу с начальными параметрами
         AssembleDirectProblem();
-        CalculatePotentialDifferences(
-            _potentialDifference,
-            _source,
-            _receiversLine,
-            _directProblemSolver
-            );
+        CalculatePotentialDifferences(ref _potentialDifference);
 
         //считаем производные по каждому параметру
         for (var i = 0; i < _parameters.Length; i++)
@@ -167,12 +157,7 @@ public class SLAEAssembler {
             var delta = parameterValue / 10;
             SetParameter(_parameters[i], parameterValue + delta);
 
-            CalculatePotentialDifferences(
-                _derivativesPotentialDifferences[i],
-                _source,
-                _receiversLine,
-                _directProblemSolver
-                );
+            CalculatePotentialDifferences(ref _derivativesPotentialDifferences[i]);
 
             SetParameter(_parameters[i], parameterValue); //ввернули параметр на место
 
