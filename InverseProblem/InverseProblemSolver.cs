@@ -81,6 +81,7 @@ public class InverseProblemSolver
     {
         _areas = areas;
         _sigmas = sigmas;
+        _previousSigmas = sigmas;
         _firstConditions = firstConditions;
 
         return this;

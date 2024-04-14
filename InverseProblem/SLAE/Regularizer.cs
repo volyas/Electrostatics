@@ -86,14 +86,27 @@ public class Regularizer
     }
     private double FindGlobalConstraint(Equation<Matrix> equation, double alpha, double[] sigmas)
     {
-        AssembleSLAE(equation, alpha);
+        bool errorOccurred = true;
 
-        BufferVector = _gaussElimination.Solve(BufferMatrix, BufferVector);
+        while (errorOccurred)
+        {
+            AssembleSLAE(equation, alpha);
+
+            try
+            {
+                BufferVector = _gaussElimination.Solve(BufferMatrix, BufferVector);
+                errorOccurred = false;
+            }
+            catch (DivideByZeroException)
+            {
+                alpha *= 1.5;
+            }
+        }
 
         var sum = 0d;
         for (int i = 0; i < sigmas.Length; i++)
         {
-            sum = sigmas[i] + BufferVector[i];            
+            sum = sigmas[i] + BufferVector[i];
 
             if (sum is >= 5 or <= 1e-3)
             {

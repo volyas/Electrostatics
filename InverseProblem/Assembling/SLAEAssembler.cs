@@ -88,7 +88,7 @@ public class SLAEAssembler {
             {
                 _equation.Matrix[q, s] = 0;
 
-                    _equation.Matrix[q, s] += _weightsSquare * _derivativesPotentialDifferences[q] *
+                _equation.Matrix[q, s] += _weightsSquare * _derivativesPotentialDifferences[q] *
                                               _derivativesPotentialDifferences[s];
             }
         }
