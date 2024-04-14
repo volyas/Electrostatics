@@ -8,6 +8,7 @@ using DirectProblem.FEM;
 using DirectProblem.GridGenerator;
 using DirectProblem.TwoDimensional.Assembling.Local;
 using DirectProblem.TwoDimensional;
+using DirectProblem.GridGenerator.Intervals.Splitting;
 
 namespace InverseProblem.Assembling;
 
@@ -17,13 +18,13 @@ public class SLAEAssembler {
     private readonly GridBuilder2D _gridBuilder2D;
     private readonly DirectProblemSolver _directProblemSolver;
 
-    private readonly Source[] _sources;
-    private readonly ReceiverLine[] _receiversLines;
+    private readonly Source _source;
+    private readonly ReceiverLine _receiversLine;
     private readonly Parameter[] _parameters;
-    private readonly double[] _truePotentialDifferences;
-    private double[] _weightsSquares;
-    private readonly double[] _potentialDifferences;
-    private readonly double[][] _derivativesPotentialDifferences;
+    private readonly double _truePotentialDifference;
+    private double _weightsSquare;
+    private readonly double _potentialDifference;
+    private readonly double[] _derivativesPotentialDifferences;
 
     private Area[] _areas;
     private double[] _sigmas;
@@ -36,21 +37,21 @@ public class SLAEAssembler {
     public SLAEAssembler(
             GridBuilder2D gridBuilder2D,
             DirectProblemSolver directProblemSolver,
-            Source[] sources,
-            ReceiverLine[] receiversLines,
+            Source source,
+            ReceiverLine receiversLine,
             Parameter[] parameters,
             Vector initialValues,
-            double[] truePotentialDifferences,
+            double truePotentialDifference,
             Area[] areas,
             double[] sigmas,
             FirstConditionValue[] firstConditions)
     {
         _gridBuilder2D = gridBuilder2D;
         _directProblemSolver = directProblemSolver;
-        _sources = sources;
-        _receiversLines = receiversLines;
+        _source = source;
+        _receiversLine = receiversLine;
         _parameters = parameters;
-        _truePotentialDifferences = truePotentialDifferences;
+        _truePotentialDifference = truePotentialDifference;
         _areas = areas;
         _sigmas = sigmas;
         _firstConditions = firstConditions;
@@ -60,25 +61,20 @@ public class SLAEAssembler {
         _equation = new Equation<Matrix>(new Matrix(parameters.Length), initialValues,
             new Vector(parameters.Length));
 
-        _potentialDifferences = new double[_receiversLines.Length];
-        _derivativesPotentialDifferences = new double[parameters.Length][]; //двумерный массив
+        _potentialDifference = new double();
+        _derivativesPotentialDifferences = new double[parameters.Length]; 
 
         for (var i = 0; i < parameters.Length; i++)
         {
-            _derivativesPotentialDifferences[i] = new double[_receiversLines.Length];
+            _derivativesPotentialDifferences[i] = new double();
         }
     }
 
     private void CalculateWeights()
     {
-        _weightsSquares = new double[_truePotentialDifferences.Length];
-
-        for (var i = 0; i < _receiversLines.Length; i++)
-        {
-            _weightsSquares[i] = Math.Pow(1d / _truePotentialDifferences[i], 2);
-        }
+       _weightsSquare = Math.Pow(1d / _truePotentialDifference, 2);
     }
-    private void SetParameter(Parameter parameter, double value)
+    public void SetParameter(Parameter parameter, double value)
     {
         _sigmas[parameter.Index] = value;
     }
@@ -94,11 +90,8 @@ public class SLAEAssembler {
             {
                 _equation.Matrix[q, s] = 0;
 
-                for (var i = 0; i < _receiversLines.Length; i++)
-                {
-                    _equation.Matrix[q, s] += _weightsSquares[i] * _derivativesPotentialDifferences[q][i] *
-                                              _derivativesPotentialDifferences[s][i];
-                }
+                    _equation.Matrix[q, s] += _weightsSquare * _derivativesPotentialDifferences[q] *
+                                              _derivativesPotentialDifferences[s];
             }
         }
     }
@@ -107,48 +100,65 @@ public class SLAEAssembler {
         for (var q = 0; q < _equation.Matrix.CountRows; q++)
         {
             _equation.RightPart[q] = 0;
-
-            for (var i = 0; i < _receiversLines.Length; i++)
-            {
-                _equation.RightPart[q] -= _weightsSquares[i] *
-                                          (_potentialDifferences[i] - _truePotentialDifferences[i]) *
-                                          _derivativesPotentialDifferences[q][i];
-            }
+                        
+                _equation.RightPart[q] -= _weightsSquare *
+                                          (_potentialDifference - _truePotentialDifference) *
+                                          _derivativesPotentialDifferences[q];
         }
     }
+    private void AssembleDirectProblem()
+    {
+        _grid = _gridBuilder2D
+            .SetRAxis(new AxisSplitParameter(new[]
+                    { 0, 0.1, 1.1, 20.1, 100.1 },
+                    new UniformSplitter(4),
+                    new UniformSplitter(40),
+                    new ProportionalSplitter(15, 1.45),
+                    new ProportionalSplitter(5, 1.35)
+             ))
+            .SetZAxis(new AxisSplitParameter(new[]
+                    { -260d, -160d, -135d, -131d, -130d, -125d, -100d, 0d },
+                    new ProportionalSplitter(5, 1 / 1.5),
+                    new ProportionalSplitter(15, 1 / 1.48),
+                    new UniformSplitter(156),
+                    new UniformSplitter(39),
+                    new UniformSplitter(195),
+                    new ProportionalSplitter(15, 1.48),
+                    new ProportionalSplitter(5, 1.5))
+             )
+            .SetAreas(_areas)
+            .Build();
 
-    private void CalculatePotentialDifference(
-        double[] potentialDifferences,
-        Source[] sources,
-        ReceiverLine[] receiversLines,
+    }
+    private void CalculatePotentialDifferences(
+        double potentialDifference,
+        Source source,
+        ReceiverLine receiversLine,
         DirectProblemSolver directProblemSolver
         )
     {
-        for (var i = 0; i < sources.Length; i++)
-        {
             var solution = directProblemSolver
                 .SetGrid(_grid)
                 .SetMaterials(_sigmas)
-                .SetSource(sources[i])
+                .SetSource(source)
                 .SetFirstConditions(_firstConditions)
                 .Solve();
+        _localBasisFunctionsProvider = new LocalBasisFunctionsProvider(_grid, LinearFunctionsProvider);
+        _femSolution = new FEMSolution(_grid, solution, _localBasisFunctionsProvider);
+            var potentialM = _femSolution.Calculate(receiversLine.PointM);
+            var potentialN = _femSolution.Calculate(receiversLine.PointN);
 
-            _femSolution = new FEMSolution(_grid, solution, _localBasisFunctionsProvider);
-            var potentialM = _femSolution.Calculate(receiversLines[i].PointM);
-            var potentialN = _femSolution.Calculate(receiversLines[i].PointN);
-
-            potentialDifferences[i] = potentialM - potentialN;
-        }
+            potentialDifference = potentialM - potentialN;
         
     }
     private void CalculateDerivatives()
     {
         //решаем прямую задачу с начальными параметрами
-
-        CalculatePotentialDifference(
-            _potentialDifferences,
-            _sources,
-            _receiversLines,
+        AssembleDirectProblem();
+        CalculatePotentialDifferences(
+            _potentialDifference,
+            _source,
+            _receiversLine,
             _directProblemSolver
             );
 
@@ -159,20 +169,17 @@ public class SLAEAssembler {
             var delta = parameterValue / 10;
             SetParameter(_parameters[i], parameterValue + delta);
 
-            CalculatePotentialDifference(
+            CalculatePotentialDifferences(
                 _derivativesPotentialDifferences[i],
-                _sources,
-                _receiversLines,
+                _source,
+                _receiversLine,
                 _directProblemSolver
                 );
 
             SetParameter(_parameters[i], parameterValue); //ввернули параметр на место
 
-            for (var j = 0; j < _receiversLines.Length; j++)
-            {
-                _derivativesPotentialDifferences[i][j] =
-                    (_derivativesPotentialDifferences[i][j] - _potentialDifferences[j]) / delta;
-            }
+                _derivativesPotentialDifferences[i] =
+                    (_derivativesPotentialDifferences[i] - _potentialDifference) / delta;
         }
     }    
 

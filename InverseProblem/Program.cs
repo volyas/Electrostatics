@@ -145,16 +145,13 @@ var areas = new Area[]
     //пятый слой
     new(1, new Node2D(0.1, -260d), new Node2D(100.1, -160d))
 };
-var sigmas = new MaterialFactory
-(
-    new List<double> { 0.5, 0.1, 0.05, 0.2, 0.05, 0d, 1d }
-);
+var sigmas = new[] { 0.5, 0.1, 0.05, 0.2, 0.05, 0d, 1d };
 
 
 var targetParameters = new InverseProblem.Assembling.Parameter[]
 {
-    new (ParameterType.HorizontalBound, 1),
     new (ParameterType.Sigma, 1),
+    new (ParameterType.Sigma, 1)
 };
 
 var trueValues = new Vector(new[] { 0.05, 1 / 3 });
@@ -165,11 +162,10 @@ for (var i = 0; i < sources.Length; i++)
 {
     var solution = inverseProblemSolver
         .SetSource(sources[i])
-        .SetReceivers(receivesrLine)
+        .SetReceiver(receivesrLine[i])
         .SetParameters(targetParameters, trueValues, initialValues)
-        .SetTruePotentialDifferences(truePotentialDifferences)
-        .SetInitialDirectProblemParameters(rPoints, zPoints, areas, sigmas, firstConditions)
-        .AssembleSLAE()
+        .SetTruePotentialDifference(truePotentialDifferences[i])
+        .SetDirectProblemParameters(areas, sigmas, firstConditions)
         .Solve();
 
     if (i == 31)
