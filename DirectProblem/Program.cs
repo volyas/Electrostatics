@@ -135,6 +135,7 @@ var resultO = new ResultIO("../DirectProblem/Results/");
 for (var i = 0; i < sources.Length; i++)
 {
     var solution = directProblemSolver
+                .SetGlobalAssembler(globalAssembler)
                 .SetGrid(grid)
                 .SetMaterials(materialFactory)
                 .SetSource(sources[i])

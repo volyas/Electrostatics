@@ -26,6 +26,11 @@ public class DirectProblemSolver
     private Equation<SymmetricSparseMatrix> _equation;
 
 
+    public DirectProblemSolver SetGlobalAssembler(GlobalAssembler<Node2D> globalAssembler)
+    {
+        _globalAssembler = globalAssembler;
+        return this;
+    }
     public DirectProblemSolver SetGrid(Grid<Node2D> grid)
     {
         _grid = grid;
