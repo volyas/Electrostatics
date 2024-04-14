@@ -126,7 +126,7 @@ for (var i = 0; i < sources.Length; i++)
 
     CourseHolder.GetInfo(i, 0);
 }
-
+Console.WriteLine("DirectProblem solved!");
 // задаём параметры области для обратной задачи
 var areas = new Area[]
 {
@@ -168,10 +168,10 @@ for (var i = 0; i < sources.Length; i++)
         .SetDirectProblemParameters(areas, sigmas, firstConditions)
         .Solve();
 
-    if (i == 31)
-    {
-        resultO.WriteResult(solution, "v2_inverse.dat");
-    }
+    //if (i == 31)
+    //{
+    //    resultO.WriteResult(solution, "v2_inverse.dat");
+    //}
 
     CourseHolder.GetInfo(i, 0);
 }
