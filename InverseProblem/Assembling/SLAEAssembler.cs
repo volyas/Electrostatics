@@ -60,8 +60,6 @@ public class SLAEAssembler {
 
         _equation = new Equation<Matrix>(new Matrix(parameters.Length), initialValues,
             new Vector(parameters.Length));
-
-        _potentialDifference = new double();
         _derivativesPotentialDifferences = new double[parameters.Length]; 
 
         for (var i = 0; i < parameters.Length; i++)
@@ -181,7 +179,13 @@ public class SLAEAssembler {
                 _derivativesPotentialDifferences[i] =
                     (_derivativesPotentialDifferences[i] - _potentialDifference) / delta;
         }
-    }    
+    }
+    public double CalculateFunctionality()
+    {
+        var functionality = _weightsSquare * Math.Pow(_potentialDifference - _truePotentialDifference, 2);
+
+        return functionality;
+    }
 
     private void AssembleSLAE()
     {

@@ -111,15 +111,12 @@ public class InverseProblemSolver
 
     public Vector Solve()
     {
-        //Собрать сетку для базовых значений, учесть только А электрод
-        //Посчитать разности потенциалов M-N для А, сделать аналогично для B, но потенциалы буду с минусом
-        //Сложить разности при А и при Б
         Init();
 
-        var residual = 1d;
+        var functionality = 1d;
         Equation<Matrix> equation = null!;
 
-        for (var i = 1; i <= MethodsConfig.MaxIterations && residual > MethodsConfig.EpsDouble; i++)
+        for (var i = 1; i <= MethodsConfig.MaxIterations && Math.Sqrt(functionality) > MethodsConfig.FuncEps; i++)
         {
             equation = _slaeAssembler.Build();
 
@@ -140,13 +137,13 @@ public class InverseProblemSolver
 
             _bufferVector = GaussElimination.Solve(_bufferMatrix, _bufferVector);
 
-            residual = CalculateResidual(equation);
+            functionality = _slaeAssembler.CalculateFunctionality();
 
             Vector.Sum(equation.Solution, _bufferVector, equation.Solution);
 
             UpdateParameters(equation.Solution);
 
-            CourseHolder.GetInfo(i, residual);
+            CourseHolder.GetInfo(i, functionality);
         }
 
         Console.WriteLine();

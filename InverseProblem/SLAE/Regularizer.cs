@@ -49,7 +49,7 @@ public class Regularizer
 
         BufferVector = equation.RightPart; // нет разности в правой части, потому что равенство
     }
-
+        
     private double CalculateResidual(Equation<Matrix> equation, double alpha)
     {
         Matrix.CreateIdentityMatrix(BufferMatrix);
