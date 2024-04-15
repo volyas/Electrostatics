@@ -182,7 +182,7 @@ public class SLAEAssembler {
             {
                 _derivativesPotentialDifferences[i][j] =
                     (_derivativesPotentialDifferences[i][j] - _potentialDifferences[j]) / delta;
-            }
+            }            
         }
     }
     public double CalculateFunctionality()
@@ -191,7 +191,6 @@ public class SLAEAssembler {
         CalculatePotentialDifferences(_potentialDifferences);
         for (var i = 0; i < _sources.Length; i++)
         {
-
             functionality += _weightsSquares[i] * Math.Pow(_potentialDifferences[i] - _truePotentialDifferences[i], 2);
         }
 

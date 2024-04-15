@@ -146,8 +146,6 @@ var areas = new Area[]
 };
 var sigmas = new[] { 0.5, 0.1, 0.04, 0.2, 1d/3, 0d, 1d };
 
-
-
 var targetParameters = new InverseProblem.Assembling.Parameter[]
 {
     //new (ParameterType.Sigma, 2),
