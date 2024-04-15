@@ -176,7 +176,6 @@ var inverseProblemSolver = new InverseProblemSolver(gridBuilder2D);
     //    resultO.WriteResult(solution, "v2_inverse.dat");
     //}
 
-    CourseHolder.GetInfo(i, 0);
     foreach (var value in solution)
     {
         Console.WriteLine(value);
