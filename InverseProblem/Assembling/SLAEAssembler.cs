@@ -139,7 +139,7 @@ public class SLAEAssembler {
             .Build();
 
     }
-    private void CalculatePotentialDifferences(ref double[] potentialDifference)
+    private void CalculatePotentialDifferences(double[] potentialDifference)
     {
         for (var i = 0; i < _sources.Length; i++)
         {
@@ -164,16 +164,18 @@ public class SLAEAssembler {
     {
         //решаем прямую задачу с начальными параметрами
         AssembleDirectProblem();
-        CalculatePotentialDifferences(ref _potentialDifferences);
+        CalculatePotentialDifferences(_potentialDifferences);
 
         //считаем производные по каждому параметру
         for (var i = 0; i < _parameters.Length; i++)
         {
             var parameterValue = GetParameter(_parameters[i]);
-            var delta = parameterValue / 10;
+            //var delta = parameterValue / 10;
+            var delta = 0.01;
+
             SetParameter(_parameters[i], parameterValue + delta);
 
-            CalculatePotentialDifferences(ref _derivativesPotentialDifferences[i]);
+            CalculatePotentialDifferences(_derivativesPotentialDifferences[i]);
 
             SetParameter(_parameters[i], parameterValue); //ввернули параметр на место
             for (var j = 0; j < _sources.Length; j++)
