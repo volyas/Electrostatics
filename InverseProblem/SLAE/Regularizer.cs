@@ -40,11 +40,11 @@ public class Regularizer
     }
        
 
-    private void AssembleSLAE(Equation<Matrix> equation, double alpha)
+    private void AssembleSLAE(Equation<Matrix> equation, Vector alphas)
     {
         Matrix.CreateIdentityMatrix(BufferMatrix);
 
-        Matrix.Sum(equation.Matrix, Matrix.Multiply(alpha, BufferMatrix, BufferMatrix), BufferMatrix);
+        Matrix.Sum(equation.Matrix, Matrix.Multiply(alphas, BufferMatrix, BufferMatrix), BufferMatrix);
 
         BufferVector = equation.RightPart; // нет разности в правой части, потому что равенство
     }
@@ -87,13 +87,13 @@ public class Regularizer
 
         return alphas;
     }
-    private double FindGlobalConstraint(Equation<Matrix> equation, double alpha, double[] sigmas)
+    private Vector FindGlobalConstraint(Equation<Matrix> equation, Vector alphas, double[] sigmas)
     {
         bool errorOccurred = true;
 
         while (errorOccurred)
         {
-            AssembleSLAE(equation, alpha);
+            AssembleSLAE(equation, alphas);
 
             try
             {
@@ -102,7 +102,10 @@ public class Regularizer
             }
             catch (DivideByZeroException)
             {
-                alpha *= 1.5;
+                for (var i = 0; i < alphas.Count; i++)
+                {
+                    alphas[i] *= 1.5;
+                }
             }
         }
 
