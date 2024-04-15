@@ -144,7 +144,7 @@ var areas = new Area[]
     //пятый слой
     new(1, new Node2D(0.1, -260d), new Node2D(100.1, -160d))
 };
-var sigmas = new[] { 0.5, 0.1, 0.04, 0.2, 1d/3, 0d, 1d };
+var sigmas = new[] { 0.5, 0.1, 0.01, 0.2, 1d/3, 0d, 1d };
 
 var targetParameters = new InverseProblem.Assembling.Parameter[]
 {
@@ -157,7 +157,7 @@ var targetParameters = new InverseProblem.Assembling.Parameter[]
 //var trueValues = new Vector(new[] { 1d / 3 });
 //var initialValues = new Vector(new[] { 0.08 }); //50 итераций 0,3019425292860777
 var trueValues = new Vector(new[] { 0.05 });
-var initialValues = new Vector(new[] { 0.04 });
+var initialValues = new Vector(new[] { 0.01 });
 var inverseProblemSolver = new InverseProblemSolver(gridBuilder2D);
     var solution = inverseProblemSolver
         .SetSource(sources)

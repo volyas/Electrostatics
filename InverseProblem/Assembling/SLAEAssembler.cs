@@ -170,8 +170,7 @@ public class SLAEAssembler {
         for (var i = 0; i < _parameters.Length; i++)
         {
             var parameterValue = GetParameter(_parameters[i]);
-            //var delta = parameterValue / 10;
-            var delta = 0.01;
+            var delta = parameterValue / 10;
 
             SetParameter(_parameters[i], parameterValue + delta);
 
