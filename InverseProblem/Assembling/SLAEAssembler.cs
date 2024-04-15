@@ -193,7 +193,7 @@ public class SLAEAssembler {
             functionality += _weightsSquares[i] * Math.Pow(_potentialDifferences[i] - _truePotentialDifferences[i], 2);
         }
 
-        return functionality;
+        return Math.Sqrt(functionality);
     }
 
     private void AssembleSLAE()

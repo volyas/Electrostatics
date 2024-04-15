@@ -117,7 +117,7 @@ public class InverseProblemSolver
         var functionality = 1d;
         Equation<Matrix> equation = null!;
 
-        for (var i = 1; i <= MethodsConfig.MaxIterations && Math.Sqrt(functionality) > MethodsConfig.FuncEps; i++)
+        for (var i = 1; i <= MethodsConfig.MaxIterations && functionality > MethodsConfig.FuncEps; i++)
         {
             equation = _slaeAssembler.Build();
 
