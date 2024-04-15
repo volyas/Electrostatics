@@ -27,13 +27,13 @@ public class InverseProblemSolver
     private static readonly DirectProblemSolver DirectProblemSolver = new();
     private readonly GridBuilder2D _gridBuilder2D;
     private SLAEAssembler _slaeAssembler;
-    private Source _source;
-    private ReceiverLine _receiver;
+    private Source[] _sources;
+    private ReceiverLine[] _receivers;
     private Parameter[] _parameters;
     private Vector _trueValues;
     private Vector _initialValues;
 
-    private double _truePotentialDifference;
+    private double[] _truePotentialDifferences;
 
     private Area[] _areas;
     private double[] _sigmas;
@@ -48,15 +48,15 @@ public class InverseProblemSolver
     {
         _gridBuilder2D = gridBuilder2D;
     }
-    public InverseProblemSolver SetSource(Source source)
+    public InverseProblemSolver SetSource(Source[] sources)
     {
-        _source = source;
+        _sources = sources;
         return this;
     }
 
-    public InverseProblemSolver SetReceiver(ReceiverLine receiver)
+    public InverseProblemSolver SetReceiver(ReceiverLine[] receivers)
     {
-        _receiver = receiver;
+        _receivers = receivers;
 
         return this;
     }
@@ -69,9 +69,9 @@ public class InverseProblemSolver
 
         return this;
     }
-    public InverseProblemSolver SetTruePotentialDifference(double truePotentialDifference)
+    public InverseProblemSolver SetTruePotentialDifference(double[] truePotentialDifferences)
     {
-        _truePotentialDifference = truePotentialDifference;
+        _truePotentialDifferences = truePotentialDifferences;
 
         return this;
     }
@@ -92,11 +92,11 @@ public class InverseProblemSolver
         _slaeAssembler = new SLAEAssembler(
             _gridBuilder2D,
             DirectProblemSolver,
-            _source,
-            _receiver,
+            _sources,
+            _receivers,
             _parameters,
             _initialValues,
-            _truePotentialDifference,
+            _truePotentialDifferences,
             _areas,
             _sigmas,
             _firstConditions

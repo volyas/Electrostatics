@@ -77,17 +77,17 @@ var firstConditions = firstBoundaryProvider.GetConditions(64, 430);
 
 var current = 1d;
 var sources = new Source[1];
-var receivesrLine = new ReceiverLine[1];
+var receivesrLines = new ReceiverLine[1];
 var truePotentialDifferences = new double[1];
 var centersZ = new double[1];
 for (var i = 0; i < 1; i++)
 {
     sources[i] = new Source(new Node2D(0.05, -131 - 1 * i), current);
-    receivesrLine[i] = new ReceiverLine(
+    receivesrLines[i] = new ReceiverLine(
         new Node2D(sources[i].Point.R, sources[i].Point.Z - 1),
         new Node2D(sources[i].Point.R, sources[i].Point.Z - 2)
     );
-    centersZ[i] = (sources[i].Point.Z + receivesrLine[i].PointN.Z) / 2;
+    centersZ[i] = (sources[i].Point.Z + receivesrLines[i].PointN.Z) / 2;
 }
 
 //for (var i = 0; i < 59; i++)
@@ -119,8 +119,8 @@ for (var i = 0; i < sources.Length; i++)
 
     var femSolution = new FEMSolution(trueGrid, trueSolution, localBasisFunctionsProvider);
 
-    var potentialM = femSolution.Calculate(receivesrLine[i].PointM);
-    var potentialN = femSolution.Calculate(receivesrLine[i].PointN);
+    var potentialM = femSolution.Calculate(receivesrLines[i].PointM);
+    var potentialN = femSolution.Calculate(receivesrLines[i].PointN);
 
     //var potential = femSolution.Calculate(new Node2D(0.1, -130));
 
@@ -163,13 +163,11 @@ var targetParameters = new InverseProblem.Assembling.Parameter[]
 var trueValues = new Vector(new[] { 1d / 3 });
 var initialValues = new Vector(new[] { 1d / 3 });
 var inverseProblemSolver = new InverseProblemSolver(gridBuilder2D);
-for (var i = 0; i < sources.Length; i++)
-{
     var solution = inverseProblemSolver
-        .SetSource(sources[i])
-        .SetReceiver(receivesrLine[i])
+        .SetSource(sources)
+        .SetReceiver(receivesrLines)
         .SetParameters(targetParameters, trueValues, initialValues)
-        .SetTruePotentialDifference(truePotentialDifferences[i])
+        .SetTruePotentialDifference(truePotentialDifferences)
         .SetDirectProblemParameters(areas, sigmas, firstConditions)
         .Solve();
 
@@ -183,4 +181,3 @@ for (var i = 0; i < sources.Length; i++)
     {
         Console.WriteLine(value);
     }
-}
