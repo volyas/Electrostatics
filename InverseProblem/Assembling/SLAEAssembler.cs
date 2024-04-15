@@ -156,8 +156,7 @@ public class SLAEAssembler {
             var potentialN = _femSolution.Calculate(_receiversLines[i].PointN);
 
             potentialDifference[i] = potentialM - potentialN;
-        }
-        
+        }        
         
     }
     private void CalculateDerivatives()

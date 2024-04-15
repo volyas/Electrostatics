@@ -9,7 +9,7 @@ public class Regularizer
     private readonly GaussElimination _gaussElimination;
     public Matrix BufferMatrix { get; set; }
     public Vector BufferVector { get; set; }
-    public Vector ResidualBufferVector { get; set; }
+    public Vector PreviousSolution { get; set; }
 
 
     public Regularizer(GaussElimination gaussElimination)
@@ -34,14 +34,15 @@ public class Regularizer
     public Vector Regularize(Equation<Matrix> equation, double[] sigmas, double[] previousSigmas, Parameter[] parameters)
     {
         var alphas = CalculateAlpha(equation.Matrix);
+        alphas = FindPossibleAlpha(equation, alphas);
 
         alphas = FindLocalConstraint(sigmas, previousSigmas, alphas);
 
         alphas = FindGlobalConstraint(equation, alphas, sigmas, parameters);
-        
+
         return alphas;
     }
-       
+
 
     private void AssembleSLAE(Equation<Matrix> equation, Vector alphas)
     {
@@ -51,7 +52,7 @@ public class Regularizer
 
         BufferVector = equation.RightPart; // нет разности в правой части, потому что равенство
     }
-        
+
     private double CalculateResidual(Equation<Matrix> equation, double alpha)
     {
         Matrix.CreateIdentityMatrix(BufferMatrix);
@@ -79,10 +80,10 @@ public class Regularizer
             ratio = Math.Max(ratio, 1d / ratio);
 
             if (ratio >= 2)
-            {            
+            {
                 alphas[alphaNumber] *= 1.5;
                 alphaNumber++;
-                
+
             }
             if (alphaNumber > alphas.Count) break;
 
@@ -92,26 +93,6 @@ public class Regularizer
     }
     private Vector FindGlobalConstraint(Equation<Matrix> equation, Vector alphas, double[] sigmas, Parameter[] parameters)
     {
-        bool errorOccurred = true;
-
-        while (errorOccurred)
-        {
-            AssembleSLAE(equation, alphas);
-
-            try
-            {
-                BufferVector = _gaussElimination.Solve(BufferMatrix, BufferVector);
-                errorOccurred = false;
-            }
-            catch (DivideByZeroException)
-            {
-                for (var i = 0; i < alphas.Count; i++)
-                {
-                    alphas[i] *= 1.5;
-                }
-            }
-        }
-
         var sum = 0d;
         for (int i = 0; i < parameters.Length; i++)
         {
@@ -125,53 +106,52 @@ public class Regularizer
         }
         return alphas;
     }
-    //private double FindPossibleAlpha(Equation<Matrix> equation, double alpha, out double residual)
-    //{
-    //    for (; ; )
-    //    {
-    //        try
-    //        {
-    //            AssembleSLAE(equation, alpha);
+    private Vector FindPossibleAlpha(Equation<Matrix> equation, Vector alphas)
+    {
+        for (; ; )
+        {
+            try
+            {
+                AssembleSLAE(equation, alphas);
 
-    //            BufferVector = _gaussElimination.Solve(BufferMatrix, BufferVector);
+                BufferVector = _gaussElimination.Solve(BufferMatrix, BufferVector);
 
-    //            residual = CalculateResidual(equation, alpha);
+                break;
+            }
+            catch
+            {
+                for (var i = 0; i < alphas.Count; i++)
+                {
+                    alphas[i] *= 1.5;
+                }
+            }
+        }
 
-    //            break;
-    //        }
-    //        catch { }
-    //        finally
-    //        {
-    //            alpha *= 1.5;
-    //        }
-    //    }
+        return alphas;
+    }
 
-    //    return alpha;
-    //}
+    private Vector FindBestAlpha(Equation<Matrix> equation, Vector alphas)
+    {
+        equation.Solution.Copy(PreviousSolution);                     
 
-    //private double FindBestAlpha(Equation<Matrix> equation, double alpha, double residual)
-    //{
-    //    var ratio = 1d;
+        do
+        {
+            AssembleSLAE(equation, alphas);
 
-    //    do
-    //    {
-    //        try
-    //        {
-    //            AssembleSLAE(equation, alpha);
+            BufferVector = _gaussElimination.Solve(BufferMatrix, BufferVector);
 
-    //            BufferVector = _gaussElimination.Solve(BufferMatrix, BufferVector);
+            
+            ratio = Math.Max(ratio, 1d / ratio);
 
-    //            var currentResidual = CalculateResidual(equation, alpha);
+            if (ratio >= 2)
+            {
+                alphas[alphaNumber] *= 1.5;
+                alphaNumber++;
 
-    //            ratio = currentResidual / residual;
-    //        }
-    //        catch { }
-    //        finally
-    //        {
-    //            alpha *= 1.5;
-    //        }
-    //    } while (ratio is < 1.999d or > 3d);
+            }
 
-    //    return alpha / 1.5;
-    //}
+        } while (ratio is < 1.999d or > 3d);
+
+        return alphas;
+    }
 }

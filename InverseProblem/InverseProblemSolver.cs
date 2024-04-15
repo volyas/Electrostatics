@@ -121,8 +121,8 @@ public class InverseProblemSolver
         {
             equation = _slaeAssembler.Build();
 
-            //var alphas = Regularizer.Regularize(equation, _sigmas, _previousSigmas, _parameters);
-            var alphas = new Vector(1);
+            var alphas = Regularizer.Regularize(equation, _sigmas, _previousSigmas, _parameters);
+            //var alphas = new Vector(1);
 
 
             Matrix.CreateIdentityMatrix(_bufferMatrix);
