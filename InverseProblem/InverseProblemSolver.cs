@@ -141,17 +141,19 @@ public class InverseProblemSolver
 
             _bufferVector = GaussElimination.Solve(_bufferMatrix, _bufferVector);  
             
-            foreach (var value in _bufferVector)
-            {
-                Console.WriteLine(value);
-            }
+            
 
             Vector.Sum(equation.Solution, _bufferVector, equation.Solution);
             UpdateParameters(equation.Solution);
 
-            functionality = _slaeAssembler.CalculateFunctionality();            
+            functionality = _slaeAssembler.CalculateFunctionality();
+            for (var k = 0; k < _bufferVector.Count; k++)
+            {
+                Console.WriteLine($"{equation.Solution[k]} {_bufferVector[k]}");
+            }
 
-            CourseHolder.GetInfo(i, functionality);
+            CourseHolder.GetFunctionalityInfo(i, functionality);
+            Console.WriteLine();
         }
 
         Console.WriteLine();

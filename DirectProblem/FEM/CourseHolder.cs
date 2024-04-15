@@ -8,6 +8,10 @@ public class CourseHolder
     {
         Console.Write($"Iteration: {iteration}, residual: {residual:E14}                                   \r");
     }
+    public static void GetFunctionalityInfo(int iteration, double functionality)
+    {
+        Console.Write($"Iteration: {iteration}, functionality: {functionality:E14}                                   \r");
+    }
 
     public static void WriteSolution(Node2D point, double value)
     {
