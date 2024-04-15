@@ -11,9 +11,11 @@ public class Regularizer
     public Vector BufferVector { get; set; }
     public Vector ResidualBufferVector { get; set; }
 
+
     public Regularizer(GaussElimination gaussElimination)
     {
         _gaussElimination = gaussElimination;
+
     }
     private Vector CalculateAlpha(Matrix matrix)
     {
@@ -28,15 +30,15 @@ public class Regularizer
 
         return alphas;
     }
-    public Vector Regularize(Equation<Matrix> equation, double[] sigmas, double[] previousSigmas)
+    public Vector Regularize(Equation<Matrix> equation, double[] sigmas, double[] previousSigmas, Parameter[] parameters)
     {
-        var alpha = CalculateAlpha(equation.Matrix);
+        var alphas = CalculateAlpha(equation.Matrix);
 
-        alpha = FindLocalConstraint(sigmas, previousSigmas, alpha);
+        alphas = FindLocalConstraint(sigmas, previousSigmas, alphas);
 
-        alpha = FindGlobalConstraint(equation, alpha, sigmas);
+        alphas = FindGlobalConstraint(equation, alphas, sigmas, parameters);
         
-        return alpha;
+        return alphas;
     }
        
 
@@ -87,7 +89,7 @@ public class Regularizer
 
         return alphas;
     }
-    private Vector FindGlobalConstraint(Equation<Matrix> equation, Vector alphas, double[] sigmas)
+    private Vector FindGlobalConstraint(Equation<Matrix> equation, Vector alphas, double[] sigmas, Parameter[] parameters)
     {
         bool errorOccurred = true;
 
@@ -110,65 +112,65 @@ public class Regularizer
         }
 
         var sum = 0d;
-        for (int i = 0; i < sigmas.Length; i++)
+        for (int i = 0; i < parameters.Length; i++)
         {
-            sum = sigmas[i] + BufferVector[i];
+            sum = sigmas[parameters[i].Index] + BufferVector[i];
 
             if (sum is >= 5 or <= 1e-3)
             {
-                alpha *= 1.5;
+                alphas[i] *= 1.5;
                 break;
             }
         }
-        return alpha;
+        return alphas;
     }
-    private double FindPossibleAlpha(Equation<Matrix> equation, double alpha, out double residual)
-    {
-        for (; ; )
-        {
-            try
-            {
-                AssembleSLAE(equation, alpha);
+    //private double FindPossibleAlpha(Equation<Matrix> equation, double alpha, out double residual)
+    //{
+    //    for (; ; )
+    //    {
+    //        try
+    //        {
+    //            AssembleSLAE(equation, alpha);
 
-                BufferVector = _gaussElimination.Solve(BufferMatrix, BufferVector);
+    //            BufferVector = _gaussElimination.Solve(BufferMatrix, BufferVector);
 
-                residual = CalculateResidual(equation, alpha);
+    //            residual = CalculateResidual(equation, alpha);
 
-                break;
-            }
-            catch { }
-            finally
-            {
-                alpha *= 1.5;
-            }
-        }
+    //            break;
+    //        }
+    //        catch { }
+    //        finally
+    //        {
+    //            alpha *= 1.5;
+    //        }
+    //    }
 
-        return alpha;
-    }
+    //    return alpha;
+    //}
 
-    private double FindBestAlpha(Equation<Matrix> equation, double alpha, double residual)
-    {
-        var ratio = 1d;
+    //private double FindBestAlpha(Equation<Matrix> equation, double alpha, double residual)
+    //{
+    //    var ratio = 1d;
 
-        do
-        {
-            try
-            {
-                AssembleSLAE(equation, alpha);
+    //    do
+    //    {
+    //        try
+    //        {
+    //            AssembleSLAE(equation, alpha);
 
-                BufferVector = _gaussElimination.Solve(BufferMatrix, BufferVector);
+    //            BufferVector = _gaussElimination.Solve(BufferMatrix, BufferVector);
 
-                var currentResidual = CalculateResidual(equation, alpha);
+    //            var currentResidual = CalculateResidual(equation, alpha);
 
-                ratio = currentResidual / residual;
-            }
-            catch { }
-            finally
-            {
-                alpha *= 1.5;
-            }
-        } while (ratio is < 1.999d or > 3d);
+    //            ratio = currentResidual / residual;
+    //        }
+    //        catch { }
+    //        finally
+    //        {
+    //            alpha *= 1.5;
+    //        }
+    //    } while (ratio is < 1.999d or > 3d);
 
-        return alpha / 1.5;
-    }
+    //    return alpha / 1.5;
+    //}
 }

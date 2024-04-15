@@ -120,12 +120,8 @@ public class InverseProblemSolver
         for (var i = 1; i <= MethodsConfig.MaxIterations && Math.Sqrt(functionality) > MethodsConfig.FuncEps; i++)
         {
             equation = _slaeAssembler.Build();
-            var alphas = new Vector(_parameters.Length);
-
-            for (var j = 0; j < _parameters.Length; j++)
-            {
-                alphas[i] = Regularizer.Regularize(equation, _sigmas, _previousSigmas);
-            }           
+           
+            var alphas = Regularizer.Regularize(equation, _sigmas, _previousSigmas, _parameters);        
             
 
             Matrix.CreateIdentityMatrix(_bufferMatrix);
