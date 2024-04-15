@@ -138,13 +138,17 @@ public class InverseProblemSolver
             _bufferMatrix = equation.Matrix.Copy(_bufferMatrix);
             _bufferVector = equation.RightPart.Copy(_bufferVector);
 
-            _bufferVector = GaussElimination.Solve(_bufferMatrix, _bufferVector);
-
-            functionality = _slaeAssembler.CalculateFunctionality();
+            _bufferVector = GaussElimination.Solve(_bufferMatrix, _bufferVector);  
+            
+            foreach (var value in _bufferVector)
+            {
+                Console.WriteLine(value);
+            }
 
             Vector.Sum(equation.Solution, _bufferVector, equation.Solution);
-
             UpdateParameters(equation.Solution);
+
+            functionality = _slaeAssembler.CalculateFunctionality();            
 
             CourseHolder.GetInfo(i, functionality);
         }

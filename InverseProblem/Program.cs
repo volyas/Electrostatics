@@ -60,9 +60,6 @@ var trueSigmas = new MaterialFactory
     new List<double> { 0.5, 0.1, 0.05, 0.2, 1d / 3, 0d, 1d }
 );
 
-
-
-
 var localBasisFunctionsProvider = new LocalBasisFunctionsProvider(trueGrid, new LinearFunctionsProvider());
 
 var firstBoundaryProvider = new FirstBoundaryProvider(trueGrid);
@@ -148,6 +145,7 @@ var areas = new Area[]
     new(1, new Node2D(0.1, -260d), new Node2D(100.1, -160d))
 };
 var sigmas = new[] { 0.5, 0.1, 0.04, 0.2, 1d/3, 0d, 1d };
+
 
 
 var targetParameters = new InverseProblem.Assembling.Parameter[]

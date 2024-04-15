@@ -187,11 +187,12 @@ public class SLAEAssembler {
     }
     public double CalculateFunctionality()
     {
-        var functionality = new double();
+        var functionality = 0d;
+        CalculatePotentialDifferences(_potentialDifferences);
         for (var i = 0; i < _sources.Length; i++)
         {
 
-            functionality = _weightsSquares[i] * Math.Pow(_potentialDifferences[i] - _truePotentialDifferences[i], 2);
+            functionality += _weightsSquares[i] * Math.Pow(_potentialDifferences[i] - _truePotentialDifferences[i], 2);
         }
 
         return functionality;
