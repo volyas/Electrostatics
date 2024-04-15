@@ -120,18 +120,24 @@ public class InverseProblemSolver
         for (var i = 1; i <= MethodsConfig.MaxIterations && Math.Sqrt(functionality) > MethodsConfig.FuncEps; i++)
         {
             equation = _slaeAssembler.Build();
+            var alphas = new Vector(_parameters.Length);
 
-            var alpha = Regularizer.Regularize(equation, _sigmas, _previousSigmas);
+            for (var j = 0; j < _parameters.Length; j++)
+            {
+                alphas[i] = Regularizer.Regularize(equation, _sigmas, _previousSigmas);
+            }           
+            
 
             Matrix.CreateIdentityMatrix(_bufferMatrix);
 
-            Matrix.Sum(equation.Matrix, Matrix.Multiply(alpha, _bufferMatrix, _bufferMatrix), equation.Matrix);
+            Matrix.Sum(equation.Matrix, Matrix.Multiply(alphas, _bufferMatrix, _bufferMatrix), equation.Matrix);
 
-            Vector.Subtract(
-                equation.RightPart, Vector.Multiply(
-                    alpha, Vector.Subtract(equation.Solution, _trueValues, _bufferVector),
-                    _bufferVector),
-                equation.RightPart);
+            //Vector.Subtract(
+            //    equation.RightPart, Vector.Multiply(
+            //        alpha, Vector.Subtract(equation.Solution, _trueValues, _bufferVector),
+            //        _bufferVector),
+            //    equation.RightPart);
+
 
             _bufferMatrix = equation.Matrix.Copy(_bufferMatrix);
             _bufferVector = equation.RightPart.Copy(_bufferVector);

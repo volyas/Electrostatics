@@ -55,6 +55,24 @@ public class Matrix
         return result;
     }
 
+    public static Matrix Multiply(Vector vector, Matrix matrix, Matrix? result = null)
+    {
+        if (matrix.CountRows != vector.Count)
+            throw new ArgumentOutOfRangeException(
+                $"{nameof(matrix.CountRows)} and {nameof(vector)} must have same size");
+
+        result ??= new Matrix(matrix.CountRows, matrix.CountColumns);
+
+        for (var i = 0; i < matrix.CountRows; i++)
+        {
+            for (var j = 0; j < matrix.CountColumns; j++)
+            {
+                result[i, j] = vector[i] * matrix[i, j];
+            }
+        }
+
+        return result;
+    }
     public static Vector Multiply(Matrix matrix, Vector vector, Vector? result = null)
     {
         if (matrix.CountRows != vector.Count)
@@ -92,6 +110,7 @@ public class Matrix
 
         return result;
     }
+
 
     public void SwapRows(int row1, int row2)
     {

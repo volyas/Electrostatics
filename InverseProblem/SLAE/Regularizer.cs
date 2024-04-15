@@ -15,28 +15,27 @@ public class Regularizer
     {
         _gaussElimination = gaussElimination;
     }
-    private double CalculateAlpha(Matrix matrix)
+    private Vector CalculateAlpha(Matrix matrix)
     {
         var n = matrix.CountRows;
-        var alpha = 0d;
+        var alphas = new Vector(matrix.CountRows);
 
         for (var i = 0; i < n; i++)
         {
-            alpha += matrix[i, i];
+            alphas[i] += matrix[i, i];
+            alphas[i] /= 10e8; //уточнить
         }
 
-        alpha /= 10e8; //уточнить
-
-        return alpha;
+        return alphas;
     }
-    public double Regularize(Equation<Matrix> equation, double[] sigmas, double[] previousSigmas)
+    public Vector Regularize(Equation<Matrix> equation, double[] sigmas, double[] previousSigmas)
     {
         var alpha = CalculateAlpha(equation.Matrix);
 
         alpha = FindLocalConstraint(sigmas, previousSigmas, alpha);
 
         alpha = FindGlobalConstraint(equation, alpha, sigmas);
-
+        
         return alpha;
     }
        
@@ -66,9 +65,10 @@ public class Regularizer
             .Norm;
     }
 
-    private double FindLocalConstraint(double[] sigmas, double[] previousSigmas, double alpha)
+    private Vector FindLocalConstraint(double[] sigmas, double[] previousSigmas, Vector alphas)
     {
         var ratio = 0d;
+        var alphaNumber = 0;
 
         for (int i = 0; i < sigmas.Length; i++)
         {
@@ -76,13 +76,16 @@ public class Regularizer
             ratio = Math.Max(ratio, 1d / ratio);
 
             if (ratio >= 2)
-            {
-                alpha *= 1.5;
-                break;
+            {            
+                alphas[alphaNumber] *= 1.5;
+                alphaNumber++;
+                
             }
+            if (alphaNumber > alphas.Count) break;
+
         }
 
-        return alpha;
+        return alphas;
     }
     private double FindGlobalConstraint(Equation<Matrix> equation, double alpha, double[] sigmas)
     {
