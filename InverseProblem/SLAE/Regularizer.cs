@@ -25,9 +25,8 @@ public class Regularizer
 
         for (var i = 0; i < n; i++)
         {
-            //alphas[i] += matrix[i, i];
-            //alphas[i] /= 10e8; //уточнить
-            alphas[i] = 0d;
+            alphas[i] = matrix[i, i] * 10e-8;
+            //alphas[i] = 0d;
         }
 
         return alphas;
