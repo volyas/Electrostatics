@@ -9,12 +9,13 @@ public class Regularizer
     private readonly GaussElimination _gaussElimination;
     public Matrix BufferMatrix { get; set; }
     public Vector BufferVector { get; set; }
-    public Vector PreviousSolution { get; set; }
+    private readonly Vector _previousSolution;
 
 
-    public Regularizer(GaussElimination gaussElimination)
+    public Regularizer(GaussElimination gaussElimination, Parameter[] parameters)
     {
         _gaussElimination = gaussElimination;
+        _previousSolution = new Vector(parameters.Length);
 
     }
     private Vector CalculateAlpha(Matrix matrix)
@@ -103,7 +104,7 @@ public class Regularizer
     {
         bool stop;
 
-        equation.Solution.Copy(PreviousSolution);
+        equation.Solution.Copy(_previousSolution);
 
         do
         {
@@ -126,7 +127,7 @@ public class Regularizer
 
         for (var i = 0; i < alphas.Count; i++)
         {
-            var changeRatio = BufferVector[i] / PreviousSolution[i];
+            var changeRatio = BufferVector[i] / _previousSolution[i];
 
             if (CheckLocalConstraints(changeRatio) &&
                 CheckGlobalConstraints(BufferVector[i])) continue;
@@ -140,7 +141,7 @@ public class Regularizer
             stop = false;
         }
 
-        BufferVector.Copy(PreviousSolution);
+        BufferVector.Copy(_previousSolution);
 
         return alphas;
     }

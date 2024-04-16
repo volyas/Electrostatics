@@ -15,6 +15,7 @@ using System.Reflection.Metadata;
 using InverseProblem.Assembling;
 using DirectProblem.Core.Base;
 using InverseProblem;
+using InverseProblem.SLAE;
 
 // инициализируем и задаём истинную сетку
 var gridBuilder2D = new GridBuilder2D();
@@ -158,7 +159,10 @@ var targetParameters = new InverseProblem.Assembling.Parameter[]
 //var initialValues = new Vector(new[] { 0.08 }); //50 итераций 0,3019425292860777
 var trueValues = new Vector(new[] { 0.05 });
 var initialValues = new Vector(new[] { 0.01 });
-var inverseProblemSolver = new InverseProblemSolver(gridBuilder2D);
+var gaussElimination = new GaussElimination();
+var regularizer = new Regularizer(gaussElimination, targetParameters);
+
+var inverseProblemSolver = new InverseProblemSolver(gridBuilder2D, gaussElimination, regularizer);
     var solution = inverseProblemSolver
         .SetSource(sources)
         .SetReceiver(receivesrLines)

@@ -22,8 +22,8 @@ namespace InverseProblem;
 public class InverseProblemSolver
 {
 
-    private static readonly GaussElimination GaussElimination = new();
-    private static readonly Regularizer Regularizer = new(GaussElimination);
+    private readonly GaussElimination _gaussElimination;
+    private readonly Regularizer _regularizer;
     private static readonly DirectProblemSolver DirectProblemSolver = new();
     private readonly GridBuilder2D _gridBuilder2D;
     private SLAEAssembler _slaeAssembler;
@@ -43,9 +43,11 @@ public class InverseProblemSolver
 
     private Matrix _bufferMatrix;
     private Vector _bufferVector;
-    public InverseProblemSolver(GridBuilder2D gridBuilder2D)
+    public InverseProblemSolver(GridBuilder2D gridBuilder2D, GaussElimination gaussElimination, Regularizer regularizer)
     {
         _gridBuilder2D = gridBuilder2D;
+        _gaussElimination = gaussElimination;
+        _regularizer = regularizer;
     }
     public InverseProblemSolver SetSource(Source[] sources)
     {
@@ -103,8 +105,8 @@ public class InverseProblemSolver
 
         _bufferMatrix = Matrix.CreateIdentityMatrix(_parameters.Length);
         _bufferVector = new Vector(_parameters.Length);
-        Regularizer.BufferMatrix = _bufferMatrix;
-        Regularizer.BufferVector = _bufferVector;
+        _regularizer.BufferMatrix = _bufferMatrix;
+        _regularizer.BufferVector = _bufferVector;
     }
 
     public Vector Solve()
@@ -118,7 +120,7 @@ public class InverseProblemSolver
         {
             equation = _slaeAssembler.Build();
 
-            var alphas = Regularizer.Regularize(equation);
+            var alphas = _regularizer.Regularize(equation);
             //var alphas = new Vector(1);
 
 
@@ -136,7 +138,7 @@ public class InverseProblemSolver
             _bufferMatrix = equation.Matrix.Copy(_bufferMatrix);
             _bufferVector = equation.RightPart.Copy(_bufferVector);
 
-            _bufferVector = GaussElimination.Solve(_bufferMatrix, _bufferVector);  
+            _bufferVector = _gaussElimination.Solve(_bufferMatrix, _bufferVector);  
             
             
 
