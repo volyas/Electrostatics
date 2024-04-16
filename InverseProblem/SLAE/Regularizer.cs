@@ -34,11 +34,8 @@ public class Regularizer
     public Vector Regularize(Equation<Matrix> equation, double[] sigmas, double[] previousSigmas, Parameter[] parameters)
     {
         var alphas = CalculateAlpha(equation.Matrix);
-        alphas = FindPossibleAlpha(equation, alphas);
-
-        alphas = FindLocalConstraint(sigmas, previousSigmas, alphas);
-
-        alphas = FindGlobalConstraint(equation, alphas, sigmas, parameters);
+        alphas = FindPossibleAlphas(equation, alphas);
+        alphas = FindBestAlphas(equation, alphas);
 
         return alphas;
     }
@@ -53,60 +50,32 @@ public class Regularizer
         BufferVector = equation.RightPart; // нет разности в правой части, потому что равенство
     }
 
-    private double CalculateResidual(Equation<Matrix> equation, double alpha)
+    //private double CalculateResidual(Equation<Matrix> equation, double alpha)
+    //{
+    //    Matrix.CreateIdentityMatrix(BufferMatrix);
+
+    //    Matrix.Sum(equation.Matrix, Matrix.Multiply(alpha, BufferMatrix, BufferMatrix), BufferMatrix);
+
+    //    Matrix.Multiply(BufferMatrix, BufferVector, ResidualBufferVector);
+
+    //    BufferVector = equation.RightPart; // нет разности в правой части, потому что равенство
+
+    //    return Vector.Subtract(
+    //        BufferVector,
+    //        ResidualBufferVector, BufferVector)
+    //        .Norm;
+    //}
+
+    private bool CheckLocalConstraints(double changeRatio)
     {
-        Matrix.CreateIdentityMatrix(BufferMatrix);
+        return !(Math.Max(1d / changeRatio, changeRatio) > 2d);
 
-        Matrix.Sum(equation.Matrix, Matrix.Multiply(alpha, BufferMatrix, BufferMatrix), BufferMatrix);
-
-        Matrix.Multiply(BufferMatrix, BufferVector, ResidualBufferVector);
-
-        BufferVector = equation.RightPart; // нет разности в правой части, потому что равенство
-
-        return Vector.Subtract(
-            BufferVector,
-            ResidualBufferVector, BufferVector)
-            .Norm;
     }
-
-    private Vector FindLocalConstraint(double[] sigmas, double[] previousSigmas, Vector alphas)
+    private bool CheckGlobalConstraints(double parameterValue)
     {
-        var ratio = 0d;
-        var alphaNumber = 0;
-
-        for (int i = 0; i < sigmas.Length; i++)
-        {
-            ratio = sigmas[i] / previousSigmas[i];
-            ratio = Math.Max(ratio, 1d / ratio);
-
-            if (ratio >= 2)
-            {
-                alphas[alphaNumber] *= 1.5;
-                alphaNumber++;
-
-            }
-            if (alphaNumber > alphas.Count) break;
-
-        }
-
-        return alphas;
+        return parameterValue is >= 1e-3 and <= 5d;
     }
-    private Vector FindGlobalConstraint(Equation<Matrix> equation, Vector alphas, double[] sigmas, Parameter[] parameters)
-    {
-        var sum = 0d;
-        for (int i = 0; i < parameters.Length; i++)
-        {
-            sum = sigmas[parameters[i].Index] + BufferVector[i];
-
-            if (sum is >= 5 or <= 1e-3)
-            {
-                alphas[i] *= 1.5;
-                break;
-            }
-        }
-        return alphas;
-    }
-    private Vector FindPossibleAlpha(Equation<Matrix> equation, Vector alphas)
+    private Vector FindPossibleAlphas(Equation<Matrix> equation, Vector alphas)
     {
         for (; ; )
         {
@@ -130,9 +99,11 @@ public class Regularizer
         return alphas;
     }
 
-    private Vector FindBestAlpha(Equation<Matrix> equation, Vector alphas)
+    private Vector FindBestAlphas(Equation<Matrix> equation, Vector alphas)
     {
-        equation.Solution.Copy(PreviousSolution);                     
+        bool stop;
+
+        equation.Solution.Copy(PreviousSolution);
 
         do
         {
@@ -140,18 +111,38 @@ public class Regularizer
 
             BufferVector = _gaussElimination.Solve(BufferMatrix, BufferVector);
 
-            
-            ratio = Math.Max(ratio, 1d / ratio);
+            alphas = ChangeAlphas(equation, alphas, out stop);
 
-            if (ratio >= 2)
-            {
-                alphas[alphaNumber] *= 1.5;
-                alphaNumber++;
+        } while (!stop);
 
-            }
+        return alphas;        
+    }
+    private Vector ChangeAlphas(Equation<Matrix> equation, Vector alphas, out bool stop)
+    {
+        stop = true;
 
-        } while (ratio is < 1.999d or > 3d);
+        Vector.Sum(equation.Solution, BufferVector,
+            BufferVector);
+
+        for (var i = 0; i < alphas.Count; i++)
+        {
+            var changeRatio = BufferVector[i] / PreviousSolution[i];
+
+            if (CheckLocalConstraints(changeRatio) &&
+                CheckGlobalConstraints(BufferVector[i])) continue;
+
+            Console.Write("Constraints weren't passed                          \r");
+
+            alphas[i] *= 1.5;
+
+            Console.Write($"alpha{i} increased to {alphas[i]}                          \r");
+
+            stop = false;
+        }
+
+        BufferVector.Copy(PreviousSolution);
 
         return alphas;
     }
+
 }
