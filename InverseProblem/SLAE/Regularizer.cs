@@ -48,7 +48,7 @@ public class Regularizer
 
         Matrix.Sum(equation.Matrix, Matrix.Multiply(alphas, BufferMatrix, BufferMatrix), BufferMatrix);
 
-        BufferVector = equation.RightPart; // нет разности в правой части, потому что равенство
+        equation.RightPart.Copy(BufferVector); // нет разности в правой части, потому что равенство
     }
 
     //private double CalculateResidual(Equation<Matrix> equation, double alpha)
