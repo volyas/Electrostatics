@@ -43,7 +43,6 @@ public class InverseProblemSolver
 
     private Matrix _bufferMatrix;
     private Vector _bufferVector;
-    private Vector _residualBufferVector;
     public InverseProblemSolver(GridBuilder2D gridBuilder2D)
     {
         _gridBuilder2D = gridBuilder2D;
@@ -104,10 +103,8 @@ public class InverseProblemSolver
 
         _bufferMatrix = Matrix.CreateIdentityMatrix(_parameters.Length);
         _bufferVector = new Vector(_parameters.Length);
-        _residualBufferVector = new Vector(_parameters.Length);
         Regularizer.BufferMatrix = _bufferMatrix;
         Regularizer.BufferVector = _bufferVector;
-        Regularizer.ResidualBufferVector = _residualBufferVector;
     }
 
     public Vector Solve()
@@ -121,7 +118,7 @@ public class InverseProblemSolver
         {
             equation = _slaeAssembler.Build();
 
-            var alphas = Regularizer.Regularize(equation, _sigmas, _previousSigmas, _parameters);
+            var alphas = Regularizer.Regularize(equation);
             //var alphas = new Vector(1);
 
 
@@ -171,12 +168,12 @@ public class InverseProblemSolver
         }
     }
 
-    private double CalculateResidual(Equation<Matrix> equation)
-    {
-        return Vector.Subtract(
-            equation.RightPart,
-            Matrix.Multiply(equation.Matrix, _bufferVector, _residualBufferVector),
-            equation.RightPart)
-            .Norm;
-    }
+    //private double CalculateResidual(Equation<Matrix> equation)
+    //{
+    //    return Vector.Subtract(
+    //        equation.RightPart,
+    //        Matrix.Multiply(equation.Matrix, _bufferVector, _residualBufferVector),
+    //        equation.RightPart)
+    //        .Norm;
+    //}
 }

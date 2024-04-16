@@ -31,7 +31,7 @@ public class Regularizer
 
         return alphas;
     }
-    public Vector Regularize(Equation<Matrix> equation, double[] sigmas, double[] previousSigmas, Parameter[] parameters)
+    public Vector Regularize(Equation<Matrix> equation)
     {
         var alphas = CalculateAlpha(equation.Matrix);
         alphas = FindPossibleAlphas(equation, alphas);
