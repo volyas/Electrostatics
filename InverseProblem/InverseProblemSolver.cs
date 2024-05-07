@@ -6,6 +6,7 @@ using DirectProblem.Core.Global;
 using DirectProblem.Core.GridComponents;
 using DirectProblem.FEM;
 using DirectProblem.GridGenerator;
+using DirectProblem.GridGenerator.Intervals.Splitting;
 using DirectProblem.SLAE;
 using DirectProblem.TwoDimensional.Assembling.Global;
 using DirectProblem.TwoDimensional.Parameters;
@@ -35,6 +36,8 @@ public class InverseProblemSolver
     private double[] _truePotentialDifferences;
 
     private Area[] _areas;
+    private AxisSplitParameter _rSplitParameters;
+    private AxisSplitParameter _zSplitParameters;
     private double[] _sigmas;
     private double[] _previousSigmas;
 
@@ -75,10 +78,16 @@ public class InverseProblemSolver
         return this;
     }
 
-    public InverseProblemSolver SetDirectProblemParameters(Area[] areas,
-        double[] sigmas, FirstConditionValue[] firstConditions)
+    public InverseProblemSolver SetDirectProblemParameters(
+        Area[] areas,
+        AxisSplitParameter rSplitParameters,
+        AxisSplitParameter zSplitParameters,
+        double[] sigmas,
+        FirstConditionValue[] firstConditions)
     {
         _areas = areas;
+        _rSplitParameters = rSplitParameters;
+        _zSplitParameters = zSplitParameters;
         _sigmas = sigmas;
         _previousSigmas = sigmas;
         _firstConditions = firstConditions;
@@ -97,6 +106,8 @@ public class InverseProblemSolver
             _initialValues,
             _truePotentialDifferences,
             _areas,
+            _rSplitParameters,
+            _zSplitParameters,
             _sigmas,
             _firstConditions
             );
@@ -129,9 +140,7 @@ public class InverseProblemSolver
             _bufferMatrix = equation.Matrix.Copy(_bufferMatrix);
             _bufferVector = equation.RightPart.Copy(_bufferVector);
 
-            _bufferVector = _gaussElimination.Solve(_bufferMatrix, _bufferVector);  
-            
-            
+            _bufferVector = _gaussElimination.Solve(_bufferMatrix, _bufferVector);
 
             Vector.Sum(equation.Solution, _bufferVector, equation.Solution);
             UpdateParameters(equation.Solution);

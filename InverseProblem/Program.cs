@@ -19,15 +19,14 @@ using InverseProblem.SLAE;
 
 // инициализируем и задаём истинную сетку
 var gridBuilder2D = new GridBuilder2D();
-var trueGrid = gridBuilder2D
-.SetRAxis(new AxisSplitParameter(new[]
+var rSplitParameters = new AxisSplitParameter(new[]
         { 0, 0.1, 1.1, 20.1, 100.1 },
         new UniformSplitter(4),
         new UniformSplitter(40),
         new ProportionalSplitter(15, 1.45),
         new ProportionalSplitter(5, 1.35)
-    ))
-.SetZAxis(new AxisSplitParameter(new[]
+    );
+var zSplitParameters = new AxisSplitParameter(new[]
         { -260d, -160d, -135d, -131d, -130d, -125d, -100d, 0d },
         new ProportionalSplitter(5, 1 / 1.5),
         new ProportionalSplitter(15, 1 / 1.48),
@@ -35,9 +34,9 @@ var trueGrid = gridBuilder2D
         new UniformSplitter(39),
         new UniformSplitter(195),
         new ProportionalSplitter(15, 1.48),
-        new ProportionalSplitter(5, 1.5))
-)
-.SetAreas(new Area[]
+        new ProportionalSplitter(5, 1.5));
+
+var areas = new Area[]
 {
     //скважина
     new(0, new Node2D(0d, -260d), new Node2D(0.1, 0d)),
@@ -53,7 +52,12 @@ var trueGrid = gridBuilder2D
     new(2, new Node2D(0.1, -160d), new Node2D(100.1, -131d)),
     //пятый слой
     new(1, new Node2D(0.1, -260d), new Node2D(100.1, -160d))
-})
+};
+
+var trueGrid = gridBuilder2D
+.SetRAxis(rSplitParameters)
+.SetZAxis(zSplitParameters)
+.SetAreas(areas)
 .Build();
 
 var trueSigmas = new MaterialFactory
@@ -128,23 +132,7 @@ for (var i = 0; i < sources.Length; i++)
 }
 Console.WriteLine("DirectProblem solved!\n");
 // задаём параметры области для обратной задачи
-var areas = new Area[]
-{
-    //скважина
-    new(0, new Node2D(0d, -260d), new Node2D(0.1, 0d)),
-    //первый слой
-    new(1, new Node2D(0.1, -100d), new Node2D(100.1, 0d)),
-    //второй слой
-    new(2, new Node2D(0.1, -130d), new Node2D(100.1, -100d)),
-    //искомый элемент
-    new(4, new Node2D(0.1, -131d), new Node2D(20.1, -130d)),
-    //третий слой
-    new(2, new Node2D(20.1, -131d), new Node2D(100.1, -130d)),
-    //четвертый слой
-    new(2, new Node2D(0.1, -160d), new Node2D(100.1, -131d)),
-    //пятый слой
-    new(1, new Node2D(0.1, -260d), new Node2D(100.1, -160d))
-};
+
 var sigmas = new[] { 0.5, 0.1, 0.01, 0.2, 1d/3, 0d, 1d };
 
 var targetParameters = new InverseProblem.Assembling.Parameter[]
@@ -168,7 +156,7 @@ var inverseProblemSolver = new InverseProblemSolver(gridBuilder2D, gaussEliminat
         .SetReceivers(receivesrLines)
         .SetParameters(targetParameters, initialValues)
         .SetTruePotentialDifference(truePotentialDifferences)
-        .SetDirectProblemParameters(areas, sigmas, firstConditions)
+        .SetDirectProblemParameters(areas, rSplitParameters, zSplitParameters, sigmas, firstConditions)
         .Solve();
 
     //if (i == 31)
