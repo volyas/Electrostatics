@@ -164,9 +164,9 @@ var regularizer = new Regularizer(gaussElimination, targetParameters);
 
 var inverseProblemSolver = new InverseProblemSolver(gridBuilder2D, gaussElimination, regularizer);
     var solution = inverseProblemSolver
-        .SetSource(sources)
-        .SetReceiver(receivesrLines)
-        .SetParameters(targetParameters, trueValues, initialValues)
+        .SetSources(sources)
+        .SetReceivers(receivesrLines)
+        .SetParameters(targetParameters, initialValues)
         .SetTruePotentialDifference(truePotentialDifferences)
         .SetDirectProblemParameters(areas, sigmas, firstConditions)
         .Solve();

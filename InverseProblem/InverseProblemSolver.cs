@@ -30,7 +30,6 @@ public class InverseProblemSolver
     private Source[] _sources;
     private ReceiverLine[] _receivers;
     private Parameter[] _parameters;
-    private Vector _trueValues;
     private Vector _initialValues;
 
     private double[] _truePotentialDifferences;
@@ -49,23 +48,22 @@ public class InverseProblemSolver
         _gaussElimination = gaussElimination;
         _regularizer = regularizer;
     }
-    public InverseProblemSolver SetSource(Source[] sources)
+    public InverseProblemSolver SetSources(Source[] sources)
     {
         _sources = sources;
         return this;
     }
 
-    public InverseProblemSolver SetReceiver(ReceiverLine[] receivers)
+    public InverseProblemSolver SetReceivers(ReceiverLine[] receivers)
     {
         _receivers = receivers;
 
         return this;
     }
 
-    public InverseProblemSolver SetParameters(Parameter[] parameters, Vector trueValues, Vector initialValues)
+    public InverseProblemSolver SetParameters(Parameter[] parameters, Vector initialValues)
     {
         _parameters = parameters;
-        _trueValues = trueValues;
         _initialValues = initialValues;
 
         return this;
@@ -127,13 +125,6 @@ public class InverseProblemSolver
             Matrix.CreateIdentityMatrix(_bufferMatrix);
 
             Matrix.Sum(equation.Matrix, Matrix.Multiply(alphas, _bufferMatrix, _bufferMatrix), equation.Matrix);
-
-            //Vector.Subtract(
-            //    equation.RightPart, Vector.Multiply(
-            //        alpha, Vector.Subtract(equation.Solution, _trueValues, _bufferVector),
-            //        _bufferVector),
-            //    equation.RightPart);
-
 
             _bufferMatrix = equation.Matrix.Copy(_bufferMatrix);
             _bufferVector = equation.RightPart.Copy(_bufferVector);
