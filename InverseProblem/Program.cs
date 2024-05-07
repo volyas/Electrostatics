@@ -25,7 +25,7 @@ var rSplitParameters = new AxisSplitParameter(new[]
         new UniformSplitter(40),
         new ProportionalSplitter(15, 1.45),
         new ProportionalSplitter(5, 1.35)
-    );
+        );
 var zSplitParameters = new AxisSplitParameter(new[]
         { -260d, -160d, -135d, -131d, -130d, -125d, -100d, 0d },
         new ProportionalSplitter(5, 1 / 1.5),
@@ -34,7 +34,8 @@ var zSplitParameters = new AxisSplitParameter(new[]
         new UniformSplitter(39),
         new UniformSplitter(195),
         new ProportionalSplitter(15, 1.48),
-        new ProportionalSplitter(5, 1.5));
+        new ProportionalSplitter(5, 1.5)
+        );
 
 var areas = new Area[]
 {
