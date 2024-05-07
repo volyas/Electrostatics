@@ -131,11 +131,11 @@ public class Regularizer
             if (CheckLocalConstraints(changeRatio) &&
                 CheckGlobalConstraints(BufferVector[i])) continue;
 
-            Console.Write("Constraints weren't passed                          \r");
+            Console.WriteLine("Constraints weren't passed                          \r");
 
             alphas[i] *= 1.5;
 
-            Console.Write($"alpha{i} increased to {alphas[i]}                          \r");
+            Console.WriteLine($"alpha{i} increased to {alphas[i]}                          \r");
 
             stop = false;
         }

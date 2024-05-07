@@ -78,7 +78,7 @@ var sources = new Source[1];
 var receivesrLines = new ReceiverLine[1];
 var truePotentialDifferences = new double[1];
 var centersZ = new double[1];
-for (var i = 0; i < 1; i++)
+for (var i = 0; i < sources.Length; i++)
 {
     sources[i] = new Source(new Node2D(0.05, -131 - 1 * i), current);
     receivesrLines[i] = new ReceiverLine(
