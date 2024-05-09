@@ -82,7 +82,6 @@ public class InverseProblemSolver
         _rSplitParameters = rSplitParameters;
         _zSplitParameters = zSplitParameters;
         _sigmas = sigmas;
-        _previousSigmas = sigmas;
         _firstConditions = firstConditions;
 
         return this;
@@ -145,7 +144,7 @@ public class InverseProblemSolver
             }
 
             CourseHolder.GetFunctionalityInfo(i, functionality);
-            var resultO = new ResultIO("../DirectProblem/Results/");
+            var resultO = new ResultIO("../InverseProblem/Results/");
             resultO.WriteConductivity($"conductivity_{i}.txt", _sigmas);
             Console.WriteLine();
         }
@@ -160,7 +159,6 @@ public class InverseProblemSolver
 
         for (var i = 0; i < _parameters.Length; i++)
         {
-            _previousSigmas[i] = _sigmas[i]; //фиксируем предыдущее значение сигм
             _slaeAssembler.SetParameter(_parameters[i], vector[i]);
         }
     }
