@@ -32,12 +32,11 @@ public class InverseProblemSolver
     private AxisSplitParameter _rSplitParameters;
     private AxisSplitParameter _zSplitParameters;
     private double[] _sigmas;
-    private double[] _previousSigmas;
 
     private FirstConditionValue[] _firstConditions;
 
-    private Matrix _bufferMatrix;
-    private Vector _bufferVector;
+    private Matrix _leftPart;
+    private Vector _rightPart;
     public InverseProblemSolver(GridBuilder2D gridBuilder2D, GaussElimination gaussElimination, Regularizer regularizer)
     {
         _gridBuilder2D = gridBuilder2D;
@@ -104,10 +103,10 @@ public class InverseProblemSolver
             _firstConditions
             );
 
-        _bufferMatrix = Matrix.CreateIdentityMatrix(_parameters.Length);
-        _bufferVector = new Vector(_parameters.Length);
-        _regularizer.BufferMatrix = _bufferMatrix;
-        _regularizer.BufferVector = _bufferVector;
+        _leftPart = Matrix.CreateIdentityMatrix(_parameters.Length);
+        _rightPart = new Vector(_parameters.Length);
+        _regularizer.BufferMatrix = _leftPart;
+        _regularizer.BufferVector = _rightPart;
     }
 
     public Vector Solve()
@@ -125,22 +124,22 @@ public class InverseProblemSolver
             //var alphas = new Vector(1);
 
 
-            Matrix.CreateIdentityMatrix(_bufferMatrix);
+            Matrix.CreateIdentityMatrix(_leftPart);
 
-            Matrix.Sum(equation.Matrix, Matrix.Multiply(alphas, _bufferMatrix, _bufferMatrix), equation.Matrix);
+            Matrix.Sum(equation.Matrix, Matrix.Multiply(alphas, _leftPart, _leftPart), equation.Matrix);
 
-            _bufferMatrix = equation.Matrix.Copy(_bufferMatrix);
-            _bufferVector = equation.RightPart.Copy(_bufferVector);
+            _leftPart = equation.Matrix.Copy(_leftPart);
+            _rightPart = equation.RightPart.Copy(_rightPart);
 
-            _bufferVector = _gaussElimination.Solve(_bufferMatrix, _bufferVector);
+            _rightPart = _gaussElimination.Solve(_leftPart, _rightPart);
 
-            Vector.Sum(equation.Solution, _bufferVector, equation.Solution);
+            Vector.Sum(equation.Solution, _rightPart, equation.Solution);
             UpdateParameters(equation.Solution);
 
             functionality = _slaeAssembler.CalculateFunctionality();
-            for (var k = 0; k < _bufferVector.Count; k++)
+            for (var k = 0; k < _rightPart.Count; k++)
             {
-                Console.WriteLine($"{equation.Solution[k]} {_bufferVector[k]}");
+                Console.WriteLine($"{equation.Solution[k]} {_rightPart[k]}");
             }
 
             CourseHolder.GetFunctionalityInfo(i, functionality);
