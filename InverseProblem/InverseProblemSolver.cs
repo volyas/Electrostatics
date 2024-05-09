@@ -1,5 +1,4 @@
 ﻿using DirectProblem;
-using DirectProblem.Core;
 using DirectProblem.Core.Base;
 using DirectProblem.Core.Boundary;
 using DirectProblem.Core.Global;
@@ -7,16 +6,10 @@ using DirectProblem.Core.GridComponents;
 using DirectProblem.FEM;
 using DirectProblem.GridGenerator;
 using DirectProblem.GridGenerator.Intervals.Splitting;
+using DirectProblem.IO;
 using DirectProblem.SLAE;
-using DirectProblem.TwoDimensional.Assembling.Global;
-using DirectProblem.TwoDimensional.Parameters;
 using InverseProblem.Assembling;
 using InverseProblem.SLAE;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace InverseProblem;
 
@@ -152,6 +145,8 @@ public class InverseProblemSolver
             }
 
             CourseHolder.GetFunctionalityInfo(i, functionality);
+            var resultO = new ResultIO("../DirectProblem/Results/");
+            resultO.WriteConductivity($"conductivity_{i}.txt", _sigmas);
             Console.WriteLine();
         }
 

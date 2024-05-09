@@ -126,7 +126,7 @@ public class Regularizer
 
         for (var i = 0; i < alphas.Count; i++)
         {
-            var changeRatio = BufferVector[i] / _previousSolution[i];
+            var changeRatio = equation.Solution[i] / _previousSolution[i];
 
             if (CheckLocalConstraints(changeRatio) &&
                 CheckGlobalConstraints(BufferVector[i])) continue;

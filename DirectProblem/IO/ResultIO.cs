@@ -52,5 +52,14 @@ public class ResultIO
             binaryWriter.Write(solution[i]);
         }
     }
+    public void WriteConductivity(string fileName, double[] sigmas)
+    {
+        using var streamWriter = new StreamWriter(_path + fileName);
+
+        foreach (var sigma in sigmas)
+        {
+            streamWriter.Write($"{sigma} ");
+        }
+    }
 
 }
