@@ -47,24 +47,8 @@ public class Regularizer
 
         Matrix.Sum(equation.Matrix, Matrix.Multiply(alphas, BufferMatrix, BufferMatrix), BufferMatrix);
 
-        equation.RightPart.Copy(BufferVector); // нет разности в правой части, потому что равенство
+        equation.RightPart.Copy(BufferVector);
     }
-
-    //private double CalculateResidual(Equation<Matrix> equation, double alpha)
-    //{
-    //    Matrix.CreateIdentityMatrix(BufferMatrix);
-
-    //    Matrix.Sum(equation.Matrix, Matrix.Multiply(alpha, BufferMatrix, BufferMatrix), BufferMatrix);
-
-    //    Matrix.Multiply(BufferMatrix, BufferVector, ResidualBufferVector);
-
-    //    BufferVector = equation.RightPart; // нет разности в правой части, потому что равенство
-
-    //    return Vector.Subtract(
-    //        BufferVector,
-    //        ResidualBufferVector, BufferVector)
-    //        .Norm;
-    //}
 
     private bool CheckLocalConstraints(double changeRatio)
     {

@@ -167,7 +167,7 @@ public class SLAEAssembler {
 
             CalculatePotentialDifferences(_derivativesPotentialDifferences[i]);
 
-            SetParameter(_parameters[i], parameterValue); //ввернули параметр на место
+            SetParameter(_parameters[i], parameterValue);
             for (var j = 0; j < _sources.Length; j++)
             {
                 _derivativesPotentialDifferences[i][j] =

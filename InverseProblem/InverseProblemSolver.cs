@@ -164,13 +164,4 @@ public class InverseProblemSolver
             _slaeAssembler.SetParameter(_parameters[i], vector[i]);
         }
     }
-
-    //private double CalculateResidual(Equation<Matrix> equation)
-    //{
-    //    return Vector.Subtract(
-    //        equation.RightPart,
-    //        Matrix.Multiply(equation.Matrix, _bufferVector, _residualBufferVector),
-    //        equation.RightPart)
-    //        .Norm;
-    //}
 }
