@@ -133,7 +133,7 @@ public class SLAEAssembler {
 
     private void CalculatePotentialDifferences(double[] potentialDifference)
     {
-        for (var i = 0; i < _sources.Length; i++)
+        Parallel.For(0, _sources.Length, i =>
         {
             var solution = _directProblemSolver
             .SetGrid(_grid)
@@ -148,7 +148,23 @@ public class SLAEAssembler {
             var potentialN = _femSolution.Calculate(_receiversLines[i].PointN);
 
             potentialDifference[i] = potentialM - potentialN;
-        }        
+        });
+        //for (var i = 0; i < _sources.Length; i++)
+        //{
+        //    var solution = _directProblemSolver
+        //    .SetGrid(_grid)
+        //    .SetMaterials(_sigmas)
+        //    .SetSource(_sources[i])
+        //    .SetFirstConditions(_firstConditions)
+        //    .Solve();
+
+        //    _localBasisFunctionsProvider = new LocalBasisFunctionsProvider(_grid, LinearFunctionsProvider);
+        //    _femSolution = new FEMSolution(_grid, solution, _localBasisFunctionsProvider);
+        //    var potentialM = _femSolution.Calculate(_receiversLines[i].PointM);
+        //    var potentialN = _femSolution.Calculate(_receiversLines[i].PointN);
+
+        //    potentialDifference[i] = potentialM - potentialN;
+        //}     
         
     }
     private void CalculateDerivatives()
