@@ -1,6 +1,8 @@
 ﻿using DirectProblem.Core;
 using DirectProblem.Core.Base;
+using DirectProblem.Core.Boundary;
 using DirectProblem.Core.GridComponents;
+using DirectProblem.FEM;
 using DirectProblem.FEM.Assembling.Local;
 using DirectProblem.TwoDimensional.Assembling.MatrixTemplates;
 
@@ -37,7 +39,7 @@ public class LocalMatrixAssembler : ILocalMatrixAssembler
         var massR = AssembleMassR(element);
         var massZ = AssembleMassZ(element);
 
-        for (var i = 0; i < element.NodesIndexes.Length; i++)
+        Parallel.For(0, element.NodesIndexes.Length, i =>
         {
             for (var j = 0; j <= i; j++)
             {
@@ -45,7 +47,16 @@ public class LocalMatrixAssembler : ILocalMatrixAssembler
                                    massR[GetMuIndex(i), GetMuIndex(j)] * stiffnessZ[GetNuIndex(i), GetNuIndex(j)];
                 _stiffness[j, i] = _stiffness[i, j];
             }
-        }
+        });
+        //for (var i = 0; i < element.NodesIndexes.Length; i++)
+        //{
+        //    for (var j = 0; j <= i; j++)
+        //    {
+        //        _stiffness[i, j] = stiffnessR[GetMuIndex(i), GetMuIndex(j)] * massZ[GetNuIndex(i), GetNuIndex(j)] +
+        //                           massR[GetMuIndex(i), GetMuIndex(j)] * stiffnessZ[GetNuIndex(i), GetNuIndex(j)];
+        //        _stiffness[j, i] = _stiffness[i, j];
+        //    }
+        //}
 
         return _stiffness;
     }
