@@ -110,7 +110,7 @@ public class SLAEAssembler {
     }
     private void AssembleRightPart()
     {
-        Parallel.For(0, _equation.Matrix.CountRows, q =>
+        for (var q = 0; q < _equation.Matrix.CountRows; q++)
         {
             _equation.RightPart[q] = 0;
             for (var i = 0; i < _sources.Length; i++)
@@ -119,17 +119,7 @@ public class SLAEAssembler {
                                           (_potentialDifferences[i] - _truePotentialDifferences[i]) *
                                           _derivativesPotentialDifferences[q][i];
             }
-        });
-        //for (var q = 0; q < _equation.Matrix.CountRows; q++)
-        //{
-        //    _equation.RightPart[q] = 0;
-        //    for (var i = 0; i < _sources.Length; i++)
-        //    {
-        //        _equation.RightPart[q] -= _weightsSquares[i] *
-        //                                  (_potentialDifferences[i] - _truePotentialDifferences[i]) *
-        //                                  _derivativesPotentialDifferences[q][i];
-        //    }
-        //}
+        }
     }
     private void AssembleDirectProblem()
     {
