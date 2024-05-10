@@ -36,7 +36,7 @@ public class InverseProblemSolver
     private FirstConditionValue[] _firstConditions;
 
     private Matrix _leftPart;
-    private Vector _rightPart;
+    private Vector _bufferVector;
     public InverseProblemSolver(GridBuilder2D gridBuilder2D, GaussElimination gaussElimination, Regularizer regularizer)
     {
         _gridBuilder2D = gridBuilder2D;
@@ -104,9 +104,9 @@ public class InverseProblemSolver
             );
 
         _leftPart = Matrix.CreateIdentityMatrix(_parameters.Length);
-        _rightPart = new Vector(_parameters.Length);
+        _bufferVector = new Vector(_parameters.Length);
         _regularizer.BufferMatrix = _leftPart;
-        _regularizer.BufferVector = _rightPart;
+        _regularizer.BufferVector = _bufferVector;
     }
 
     public Vector Solve()
@@ -123,23 +123,22 @@ public class InverseProblemSolver
             var alphas = _regularizer.Regularize(equation);
             //var alphas = new Vector(1);
 
-
             Matrix.CreateIdentityMatrix(_leftPart);
 
             Matrix.Sum(equation.Matrix, Matrix.Multiply(alphas, _leftPart, _leftPart), equation.Matrix);
 
             _leftPart = equation.Matrix.Copy(_leftPart);
-            _rightPart = equation.RightPart.Copy(_rightPart);
+            _bufferVector = equation.RightPart.Copy(_bufferVector);
 
-            _rightPart = _gaussElimination.Solve(_leftPart, _rightPart);
+            _bufferVector = _gaussElimination.Solve(_leftPart, _bufferVector);
 
-            Vector.Sum(equation.Solution, _rightPart, equation.Solution);
+            Vector.Sum(equation.Solution, _bufferVector, equation.Solution);
             UpdateParameters(equation.Solution);
 
             functionality = _slaeAssembler.CalculateFunctionality();
-            for (var k = 0; k < _rightPart.Count; k++)
+            for (var k = 0; k < _bufferVector.Count; k++)
             {
-                Console.WriteLine($"{equation.Solution[k]} {_rightPart[k]}");
+                Console.WriteLine($"{equation.Solution[k]} {_bufferVector[k]}");
             }
 
             CourseHolder.GetFunctionalityInfo(i, functionality);
@@ -155,7 +154,6 @@ public class InverseProblemSolver
 
     private void UpdateParameters(Vector vector)
     {
-
         for (var i = 0; i < _parameters.Length; i++)
         {
             _slaeAssembler.SetParameter(_parameters[i], vector[i]);
