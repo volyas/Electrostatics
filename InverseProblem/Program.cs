@@ -44,16 +44,58 @@ var areas = new Area[]
     //первый слой
     new(1, new Node2D(0.1, -100d), new Node2D(100.1, 0d)),
     //второй слой
-    new(2, new Node2D(0.1, -130d), new Node2D(100.1, -100d)),
+    new(2, new Node2D(0.1, -125d), new Node2D(100.1, -100d)),
+    //третий слой
+    new(6, new Node2D(0.1, -130d), new Node2D(20.1, -125d)),
+    new(3, new Node2D(20.1, -130d), new Node2D(100.1, -125d)),
     //искомый элемент
     new(4, new Node2D(0.1, -131d), new Node2D(20.1, -130d)),
-    //третий слой
+    //четвёртый слой
     new(2, new Node2D(20.1, -131d), new Node2D(100.1, -130d)),
-    //четвертый слой
-    new(2, new Node2D(0.1, -160d), new Node2D(100.1, -131d)),
     //пятый слой
-    new(1, new Node2D(0.1, -260d), new Node2D(100.1, -160d))
+    new(5, new Node2D(0.1, -135d), new Node2D(100.1, -131d)),
+    //шестой слой
+    new(2, new Node2D(0.1, -160d), new Node2D(20.1, -135d)),
+    new(1, new Node2D(20.1, -160d), new Node2D(100.1, -135d)),
+    //седьмой слой
+    new(6, new Node2D(0.1, -260d), new Node2D(100.1, -160d))
 };
+
+//var rSplitParameters = new AxisSplitParameter(new[]
+//        { 0, 0.1, 1.1, 20.1, 100.1 },
+//        new UniformSplitter(4),
+//        new UniformSplitter(40),
+//        new ProportionalSplitter(15, 1.45),
+//        new ProportionalSplitter(5, 1.35)
+//        );
+//var zSplitParameters = new AxisSplitParameter(new[]
+//        { -260d, -160d, -135d, -131d, -130d, -125d, -100d, 0d },
+//        new ProportionalSplitter(5, 1 / 1.5),
+//        new ProportionalSplitter(15, 1 / 1.48),
+//        new UniformSplitter(156),
+//        new UniformSplitter(39),
+//        new UniformSplitter(195),
+//        new ProportionalSplitter(15, 1.48),
+//        new ProportionalSplitter(5, 1.5)
+//        );
+
+//var areas = new Area[]
+//{
+//    //скважина
+//    new(0, new Node2D(0d, -260d), new Node2D(0.1, 0d)),
+//    //первый слой
+//    new(1, new Node2D(0.1, -100d), new Node2D(100.1, 0d)),
+//    //второй слой
+//    new(2, new Node2D(0.1, -130d), new Node2D(100.1, -100d)),
+//    //искомый элемент
+//    new(4, new Node2D(0.1, -131d), new Node2D(20.1, -130d)),
+//    //третий слой
+//    new(2, new Node2D(20.1, -131d), new Node2D(100.1, -130d)),
+//    //четвертый слой
+//    new(2, new Node2D(0.1, -160d), new Node2D(100.1, -131d)),
+//    //пятый слой
+//    new(1, new Node2D(0.1, -260d), new Node2D(100.1, -160d))
+//};
 
 var trueGrid = gridBuilder2D
 .SetRAxis(rSplitParameters)
@@ -63,7 +105,7 @@ var trueGrid = gridBuilder2D
 
 var trueSigmas = new MaterialFactory
 (
-    new List<double> { 0.5, 0.1, 0.05, 0.2, 1d / 3, 0d, 1d }
+    new List<double> { 0.5, 0.1, 0.05, 0.2, 1d / 3, 0.4, 0.01 }
 );
 
 var localBasisFunctionsProvider = new LocalBasisFunctionsProvider(trueGrid, new LinearFunctionsProvider());

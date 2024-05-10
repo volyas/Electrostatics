@@ -19,15 +19,31 @@ public class ProportionalSplitter : IIntervalSplitter
         _lengthCoefficient = (DischargeRatio - 1d) / (Math.Pow(DischargeRatio, Steps) - 1d);
     }
 
+    //public IEnumerable<double> EnumerateValues(Interval interval)
+    //{
+    //    var step = interval.Length * _lengthCoefficient;
+
+    //    for (var stepNumber = 0; stepNumber <= Steps; stepNumber++)
+    //    {
+    //        var value = interval.Begin + step * (Math.Pow(DischargeRatio, stepNumber) - 1d) / (DischargeRatio - 1d);
+
+    //        yield return value;
+    //    }
+    //}
     public IEnumerable<double> EnumerateValues(Interval interval)
     {
         var step = interval.Length * _lengthCoefficient;
 
-        for (var stepNumber = 0; stepNumber <= Steps; stepNumber++)
-        {
-            var value = interval.Begin + step * (Math.Pow(DischargeRatio, stepNumber) - 1d) / (DischargeRatio - 1d);
+        var stepNumber = 0;
+        var value = interval.Begin;
 
+        while (interval.Has(value))
+        {
             yield return value;
+            var nextValue = interval.Begin + step * (Math.Pow(DischargeRatio, stepNumber + 1) - 1d) / (DischargeRatio - 1d);
+
+            value = nextValue;
+            stepNumber++;
         }
     }
 }
