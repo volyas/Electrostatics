@@ -25,29 +25,8 @@ var gridBuilder2D = new GridBuilder2D();
 //-127.08331406406634
 //-129.06444524208246
 
-var grid = gridBuilder2D
- .SetRAxis(new AxisSplitParameter(new[]
-        { 0, 0.1, 5.1, 10.1 },
-        new UniformSplitter(4),
-        new UniformSplitter(2),
-        new NonUniformSplitter(2, 1.05)
-    ))
-.SetZAxis(new AxisSplitParameter(new[]
-        { -10d, -6d, -4d, 0d },
-        new NonUniformSplitter(2, 0.05),
-        new UniformSplitter(2),
-        new NonUniformSplitter(2, 1.05))
-)
-   //вариант с новым разбиением
-   .SetAreas(new Area[]
-   {
-       //скважина
-       new(6, new Node2D(0d, -10d), new Node2D(0.1, 0d)),
-       //первый слой
-       new(6, new Node2D(0.1, -10d), new Node2D(10.1, 0d))
-   })
-   
-   .Build();
+var grid = Grids.GetModel3();
+ 
 
 var gridO = new GridIO("../DirectProblem/Results/");
 gridO.WriteMaterials(grid, "nvkat2d.dat");
@@ -76,9 +55,9 @@ var current = 1d;
 //}
 
 var sources = new Source[10];
-var receiverLines = new ReceiverLine[10];
-var potentialDifferences = new double[10];
-var centersZ = new double[10];
+var receiverLines = new ReceiverLine[sources.Length];
+var potentialDifferences = new double[sources.Length];
+var centersZ = new double[sources.Length];
 
 for (var i = 0; i < 10; i++)
 {
@@ -93,10 +72,8 @@ var localBasisFunctionsProvider = new LocalBasisFunctionsProvider(grid, new Line
 
 
 var firstBoundaryProvider = new FirstBoundaryProvider(grid);
+var conditions = firstBoundaryProvider.GetConditions(grid.Nodes.RLength - 1, grid.Nodes.ZLength - 1);
 
-var firstConditions = firstBoundaryProvider.GetConditions(8, 6);
-//var firstConditions = firstBoundaryProvider.GetConditions(64, 430);
-//var firstConditions = firstBoundaryProvider.GetConditions(12, 440);
 
 var directProblemSolver = new DirectProblemSolver();
 
@@ -111,7 +88,7 @@ var resultO = new ResultIO("../DirectProblem/Results/");
 //                ////.SetSource(sources[33])
 //                //.SetSource(sources[5])
 //                //.SetSource(new Source(new Node2D(0.05, -128), 1))
-//                .SetFirstConditions(firstConditions)
+//                .SetFirstConditions(conditions)
 //                .Solve();
 
 //    if (i == 31)
@@ -134,7 +111,10 @@ var resultO = new ResultIO("../DirectProblem/Results/");
 //для вычисления значения в точке
 
 var solution = directProblemSolver
+    .SetGrid(grid)
+    .SetMaterials(materialFactory)
     .SetSource(new Source(new Node2D(0.05, -5), 1))
+    .SetFirstConditions(conditions)
     .Solve();
 resultO.WriteResult(solution, "v2.dat");
 var femSolution = new FEMSolution(grid, solution, localBasisFunctionsProvider);

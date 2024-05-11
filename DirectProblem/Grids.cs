@@ -50,7 +50,7 @@ public class Grids
                 new(1, new Node2D(0.1, -260d), new Node2D(100.1, -160d))
             })
             .Build();
-
+        //var firstConditions = firstBoundaryProvider.GetConditions(64, 430);
         return grid;
     }
     public static Grid<Node2D> GetHomogeneousModel()
@@ -123,5 +123,30 @@ public class Grids
 
         return grid;
     }
-    
+    public static Grid<Node2D> GetModel3()
+    {
+        var grid = GridBuilder
+        .SetRAxis(new AxisSplitParameter(new[]
+            { 0, 0.1, 5.1, 10.1 },
+            new UniformSplitter(4),
+            new UniformSplitter(2),
+            new NonUniformSplitter(2, 1.05)
+        ))
+        .SetZAxis(new AxisSplitParameter(new[]
+            { -10d, -6d, -4d, 0d },
+            new NonUniformSplitter(2, 0.05),
+            new UniformSplitter(2),
+            new NonUniformSplitter(2, 1.05))
+        )
+        .SetAreas(new Area[]
+        {
+            //скважина
+            new(6, new Node2D(0d, -10d), new Node2D(0.1, 0d)),
+            //первый слой
+            new(6, new Node2D(0.1, -10d), new Node2D(10.1, 0d))
+        })
+        .Build();
+
+        return grid;
+    }
 }
