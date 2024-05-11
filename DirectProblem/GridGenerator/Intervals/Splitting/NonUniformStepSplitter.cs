@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace DirectProblem.GridGenerator.Intervals.Splitting;
 
-public readonly record struct NonUniformSplitter : IIntervalSplitter
+public readonly record struct NonUniformStepSplitter : IIntervalSplitter
 {
     public double DischargeRatio { get; }
 
     private readonly double _step;
-    public NonUniformSplitter(double step, double dischargeRatio)
+    public NonUniformStepSplitter(double step, double dischargeRatio)
     {
         if (Math.Abs(dischargeRatio - 1d) < 1e-15)
             throw new NotSupportedException();

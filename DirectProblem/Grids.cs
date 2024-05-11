@@ -128,15 +128,15 @@ public class Grids
         var grid = GridBuilder
         .SetRAxis(new AxisSplitParameter(new[]
             { 0, 0.1, 5.1, 10.1 },
-            new UniformSplitter(4),
-            new UniformSplitter(2),
-            new NonUniformSplitter(2, 1.05)
+            new UniformStepSplitter(4),
+            new UniformStepSplitter(2),
+            new NonUniformStepSplitter(2, 1.05)
         ))
         .SetZAxis(new AxisSplitParameter(new[]
             { -10d, -6d, -4d, 0d },
-            new NonUniformSplitter(2, 0.05),
-            new UniformSplitter(2),
-            new NonUniformSplitter(2, 1.05))
+            new NonUniformStepSplitter(2, 0.05),
+            new UniformStepSplitter(2),
+            new NonUniformStepSplitter(2, 1.05))
         )
         .SetAreas(new Area[]
         {
