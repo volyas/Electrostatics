@@ -59,11 +59,12 @@ var receiverLines = new ReceiverLine[sources.Length];
 var potentialDifferences = new double[sources.Length];
 var centersZ = new double[sources.Length];
 
-for (var i = 0; i < 10; i++)
+for (var i = 0; i < sources.Length; i++)
 {
     sources[i] = new Source(new Node2D(0.05, 0 - 1 * i), current);
     receiverLines[i] = new ReceiverLine(
-        new Node2D(sources[i].Point.R, sources[i].Point.Z - 1), new Node2D(sources[i].Point.R, sources[i].Point.Z - 2)
+        new Node2D(sources[i].Point.R, sources[i].Point.Z - 1),
+        new Node2D(sources[i].Point.R, sources[i].Point.Z - 2)
     );
     centersZ[i] = (sources[i].Point.Z + receiverLines[i].PointN.Z) / 2;
 }
@@ -118,12 +119,10 @@ var solution = directProblemSolver
     .Solve();
 resultO.WriteResult(solution, "v2.dat");
 var femSolution = new FEMSolution(grid, solution, localBasisFunctionsProvider);
-
-var potential = new double[9];
 for (var i = 0; i < 9; i++)
 {
-    potential[i] = femSolution.Calculate(new Node2D(0.1, -10 + i));
-    Console.WriteLine(potential[i]);
+    potentialDifferences[i] = femSolution.Calculate(new Node2D(0.1, -10 + i)); //не разности, а просто потенциалы
+    Console.WriteLine(potentialDifferences[i]);
 }
 
 //
