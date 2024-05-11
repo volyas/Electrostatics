@@ -1,14 +1,10 @@
 ﻿using DirectProblem;
-using DirectProblem.Core.Boundary;
 using DirectProblem.Core.GridComponents;
 using DirectProblem.FEM;
 using DirectProblem.GridGenerator;
-using DirectProblem.GridGenerator.Intervals.Splitting;
 using DirectProblem.IO;
 using DirectProblem.TwoDimensional;
-using DirectProblem.TwoDimensional.Assembling;
 using DirectProblem.TwoDimensional.Assembling.Boundary;
-using DirectProblem.TwoDimensional.Assembling.Global;
 using DirectProblem.TwoDimensional.Assembling.Local;
 using DirectProblem.TwoDimensional.Parameters;
 using System.Globalization;
@@ -16,7 +12,7 @@ using System.Globalization;
 Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
 
 var gridBuilder2D = new GridBuilder2D();
-var grid = Grids.GetModel3();
+var grid = Grids.GetModel6();
  
 
 var gridO = new GridIO("../DirectProblem/Results/");
@@ -110,7 +106,7 @@ var solution = directProblemSolver
     .Solve();
 resultO.WriteResult(solution, "v2.dat");
 var femSolution = new FEMSolution(grid, solution, localBasisFunctionsProvider);
-for (var i = 0; i < 9; i++)
+for (var i = 0; i < sources.Length; i++)
 {
     potentialDifferences[i] = femSolution.Calculate(new Node2D(0.1, -10 + i)); //не разности, а просто потенциалы
     Console.WriteLine(potentialDifferences[i]);
