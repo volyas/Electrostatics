@@ -154,7 +154,7 @@ var localBasisFunctionsProvider = new LocalBasisFunctionsProvider(grid, new Line
 
 var firstBoundaryProvider = new FirstBoundaryProvider(grid);
 
-var firstConditions = firstBoundaryProvider.GetConditions(10, 6);
+var firstConditions = firstBoundaryProvider.GetConditions(8, 6);
 //var firstConditions = firstBoundaryProvider.GetConditions(64, 430);
 //var firstConditions = firstBoundaryProvider.GetConditions(12, 440);
 
@@ -194,7 +194,7 @@ var resultO = new ResultIO("../DirectProblem/Results/");
 //для вычисления значения в точке
 
 var solution = directProblemSolver
-    .SetSource(new Source(new Node2D(0.05, -131), 1))
+    .SetSource(new Source(new Node2D(0.05, -5), 1))
     .Solve();
 resultO.WriteResult(solution, "v2.dat");
 var femSolution = new FEMSolution(grid, solution, localBasisFunctionsProvider);
@@ -202,7 +202,7 @@ var femSolution = new FEMSolution(grid, solution, localBasisFunctionsProvider);
 var potential = new double[9];
 for (var i = 0; i < 9; i++)
 {
-    potential[i] = femSolution.Calculate(new Node2D(0.1, -135 + i));
+    potential[i] = femSolution.Calculate(new Node2D(0.1, -10 + i));
     Console.WriteLine(potential[i]);
 }
 
