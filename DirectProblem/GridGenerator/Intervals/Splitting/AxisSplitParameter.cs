@@ -30,4 +30,19 @@ public class AxisSplitParameter
             left = end;
         }
     }
+    public IEnumerable<double> CreateAxis()
+    {
+        foreach (var value in Splitters[0].EnumerateValues(Sections[0]))
+        {
+            yield return value;
+        }
+
+        for (var i = 1; i < Splitters.Length; i++)
+        {
+            foreach (var value in Splitters[i].EnumerateValues(Sections[i]).Skip(1))
+            {
+                yield return value;
+            }
+        }
+    }
 }

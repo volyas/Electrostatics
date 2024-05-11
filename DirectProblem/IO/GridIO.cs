@@ -45,10 +45,15 @@ namespace DirectProblem.IO
         {
             using var binaryWriter = new BinaryWriter(File.Open(_path + fileName, FileMode.OpenOrCreate));
 
-            foreach (var node in grid.Nodes)
+            for (var i = 0; i < grid.Nodes.ZLength; i++)
             {
-                binaryWriter.Write(node.R);
-                binaryWriter.Write(node.Z);
+                for (var j = 0; j < grid.Nodes.RLength; j++)
+                {
+                    var node = grid.Nodes[i * grid.Nodes.RLength + j];
+
+                    binaryWriter.Write(node.R);
+                    binaryWriter.Write(node.Z);
+                }
             }
         }
     }
