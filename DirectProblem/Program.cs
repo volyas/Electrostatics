@@ -16,15 +16,6 @@ using System.Globalization;
 Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
 
 var gridBuilder2D = new GridBuilder2D();
-
-//-110.24319388881395
-//-120.03858175448441
-//-140.11800433374964
-//-149.95696963486563
-//-122.1055746274845
-//-127.08331406406634
-//-129.06444524208246
-
 var grid = Grids.GetModel3();
  
 
