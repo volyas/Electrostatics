@@ -126,26 +126,25 @@ public class Grids
     public static Grid<Node2D> GetModel3()
     {
         var grid = GridBuilder
-        .SetRAxis(new AxisSplitParameter(new[]
-            { 0, 0.1, 5.1, 10.1 },
-            new UniformStepSplitter(4),
-            new UniformStepSplitter(2),
-            new NonUniformStepSplitter(2, 1.05)
-        ))
-        .SetZAxis(new AxisSplitParameter(new[]
-            { -10d, -6d, -4d, 0d },
-            new NonUniformStepSplitter(2, 0.05),
-            new UniformStepSplitter(2),
-            new NonUniformStepSplitter(2, 1.05))
-        )
-        .SetAreas(new Area[]
-        {
-            //скважина
-            new(6, new Node2D(0d, -10d), new Node2D(0.1, 0d)),
-            //первый слой
-            new(6, new Node2D(0.1, -10d), new Node2D(10.1, 0d))
-        })
-        .Build();
+        .SetRAxis(new AxisSplitParameter(
+                    new[] { 0d, 0.1, 10d },
+                    new UniformSplitter(4),
+                    new NonUniformStepSplitter(0.05, 1.05)
+                )
+            )
+            .SetZAxis(new AxisSplitParameter(
+                    new[] { -10d, -6d, -5d, -4d, 0d },
+                    new NonUniformStepSplitter(0.05, 1 / 1.05),
+                    new UniformStepSplitter(0.05),
+                    new UniformStepSplitter(0.05),
+                    new NonUniformStepSplitter(0.05, 1.05)
+                )
+            )
+            .SetAreas(new Area[]
+            {
+                new(6, new Node2D(0d, -10d), new Node2D(10d, 0d)),
+            })
+            .Build();
 
         return grid;
     }
