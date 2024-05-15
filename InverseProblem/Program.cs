@@ -20,45 +20,32 @@ using InverseProblem.SLAE;
 // инициализируем и задаём истинную сетку
 var gridBuilder2D = new GridBuilder2D();
 var rSplitParameters = new AxisSplitParameter(new[]
-        { 0, 0.1, 1.1, 20.1, 100.1 },
-        new UniformSplitter(4),
-        new UniformSplitter(40),
-        new ProportionalSplitter(15, 1.45),
-        new ProportionalSplitter(5, 1.35)
+        { 0d, 0.1, 5d, 8d, 10d },
+                    new UniformSplitter(4),
+                    new NonUniformStepSplitter(0.025, 1.05),
+                    new NonUniformStepSplitter(0.260, 1.05),
+                    new NonUniformStepSplitter(0.380, 1.05)
         );
 var zSplitParameters = new AxisSplitParameter(new[]
-        { -260d, -160d, -135d, -131d, -130d, -125d, -100d, 0d },
-        new ProportionalSplitter(5, 1 / 1.5),
-        new ProportionalSplitter(15, 1 / 1.48),
-        new UniformSplitter(156),
-        new UniformSplitter(39),
-        new UniformSplitter(195),
-        new ProportionalSplitter(15, 1.48),
-        new ProportionalSplitter(5, 1.5)
+        { -10d, -6d, -5d, -4d, 0d },
+                    new NonUniformStepSplitter(0.025, 1 / 1.05),
+                    new UniformStepSplitter(0.025),
+                    new UniformStepSplitter(0.025),
+                    new NonUniformStepSplitter(0.025, 1.05)
         );
 
 var areas = new Area[]
 {
-    //скважина
-    new(0, new Node2D(0d, -260d), new Node2D(0.1, 0d)),
-    //первый слой
-    new(1, new Node2D(0.1, -100d), new Node2D(100.1, 0d)),
-    //второй слой
-    new(2, new Node2D(0.1, -125d), new Node2D(100.1, -100d)),
-    //третий слой
-    new(6, new Node2D(0.1, -130d), new Node2D(20.1, -125d)),
-    new(3, new Node2D(20.1, -130d), new Node2D(100.1, -125d)),
-    //искомый элемент
-    new(4, new Node2D(0.1, -131d), new Node2D(20.1, -130d)),
-    //четвёртый слой
-    new(2, new Node2D(20.1, -131d), new Node2D(100.1, -130d)),
-    //пятый слой
-    new(5, new Node2D(0.1, -135d), new Node2D(100.1, -131d)),
-    //шестой слой
-    new(2, new Node2D(0.1, -160d), new Node2D(20.1, -135d)),
-    new(1, new Node2D(20.1, -160d), new Node2D(100.1, -135d)),
-    //седьмой слой
-    new(6, new Node2D(0.1, -260d), new Node2D(100.1, -160d))
+    new(5, new Node2D(0d, -10d), new Node2D(0.1, 0d)),
+    new(0, new Node2D(0.1, -4d), new Node2D(5d, 0d)),
+    new(3, new Node2D(5d, -5d), new Node2D(8d, 0d)),
+    new(2, new Node2D(8d, -4d), new Node2D(10d, 0d)),
+    new(2, new Node2D(0.1, -5d), new Node2D(5d, -4d)),
+    new(4, new Node2D(0.1, -5d), new Node2D(5d, -4d)),
+    new(1, new Node2D(8d, -5d), new Node2D(10d, -4d)),
+    new(0, new Node2D(5d, -6d), new Node2D(10d, -5d)),
+    new(1, new Node2D(0.1, -10d), new Node2D(8d, -6d)),
+    new(3, new Node2D(8, -10d), new Node2D(10d, -6d))
 };
 
 //var rSplitParameters = new AxisSplitParameter(new[]
@@ -105,7 +92,7 @@ var trueGrid = gridBuilder2D
 
 var trueSigmas = new MaterialFactory
 (
-    new List<double> { 0.5, 0.1, 0.05, 0.2, 1d / 3, 0.4, 0.01 }
+    new List<double> { 0.01, 0.025, 0.1, 0.2, 1d / 3, 0.5, 0d, 1d }
 );
 
 var localBasisFunctionsProvider = new LocalBasisFunctionsProvider(trueGrid, new LinearFunctionsProvider());
@@ -121,10 +108,10 @@ var firstConditions = firstBoundaryProvider.GetConditions(64, 430);
 ////var centersZ = new double[59];
 
 var current = 1d;
-var sources = new Source[1];
-var receivesrLines = new ReceiverLine[1];
-var truePotentialDifferences = new double[1];
-var centersZ = new double[1];
+var sources = new Source[10];
+var receivesrLines = new ReceiverLine[sources.Length];
+var truePotentialDifferences = new double[sources.Length];
+var centersZ = new double[sources.Length];
 for (var i = 0; i < sources.Length; i++)
 {
     sources[i] = new Source(new Node2D(0.05, -131 - 1 * i), current);
@@ -147,7 +134,6 @@ for (var i = 0; i < sources.Length; i++)
 var directProblemSolver = new DirectProblemSolver();
 var resultO = new ResultIO("../DirectProblem/Results/");
 // ищем решение для каждого источника
-var noise = 1.05d;
 for (var i = 0; i < sources.Length; i++)
 {
     var trueSolution = directProblemSolver
@@ -176,20 +162,23 @@ for (var i = 0; i < sources.Length; i++)
 Console.WriteLine("DirectProblem solved!\n");
 // задаём параметры области для обратной задачи
 
-var sigmas = new[] { 0.5, 0.1, 0.01, 0.2, 1d/3, 0d, 1d };
+var sigmas = new[] { 0.01, 0.025, 0.1, 0.2, 1d / 3, 0.5, 0d, 1d };
 
 var targetParameters = new InverseProblem.Assembling.Parameter[]
 {
-    //new (ParameterType.Sigma, 2),
-    new (ParameterType.Sigma, 2)
+    new (ParameterType.Sigma, 0),
+    new (ParameterType.Sigma, 1),
+    new (ParameterType.Sigma, 2),
+    new (ParameterType.Sigma, 3),
+    new (ParameterType.Sigma, 4),
+    new (ParameterType.Sigma, 5)
 };
 
 //var trueValues = new Vector(new[] { 0.05, 1d / 3 });
 //var initialValues = new Vector(new[] { 0.005, 0.08 });
 //var trueValues = new Vector(new[] { 1d / 3 });
 //var initialValues = new Vector(new[] { 0.08 }); //50 итераций 0,3019425292860777
-var trueValues = new Vector(new[] { 0.05 });
-var initialValues = new Vector(new[] { 0.01 });
+var initialValues = new Vector(new[] { 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1 });
 var gaussElimination = new GaussElimination();
 var regularizer = new Regularizer(gaussElimination, targetParameters);
 
