@@ -99,7 +99,6 @@ var localBasisFunctionsProvider = new LocalBasisFunctionsProvider(trueGrid, new 
 
 var firstBoundaryProvider = new FirstBoundaryProvider(trueGrid);
 var conditions = firstBoundaryProvider.GetConditions(trueGrid.Nodes.RLength - 1, trueGrid.Nodes.ZLength - 1);
-var firstConditions = firstBoundaryProvider.GetConditions(64, 430);
 
 // инициализируем источники и приёмники
 ////var current = 1d;
@@ -141,7 +140,7 @@ for (var i = 0; i < sources.Length; i++)
         .SetGrid(trueGrid)
         .SetMaterials(trueSigmas)
         .SetSource(sources[i])
-        .SetFirstConditions(firstConditions)
+        .SetFirstConditions(conditions)
         .Solve();
 
     //if (i == 31)
@@ -189,7 +188,7 @@ var inverseProblemSolver = new InverseProblemSolver(gridBuilder2D, gaussEliminat
         .SetReceivers(receivesrLines)
         .SetParameters(targetParameters, initialValues)
         .SetTruePotentialDifference(truePotentialDifferences)
-        .SetDirectProblemParameters(areas, rSplitParameters, zSplitParameters, sigmas, firstConditions)
+        .SetDirectProblemParameters(areas, rSplitParameters, zSplitParameters, sigmas, conditions)
         .Solve();
 
     //if (i == 31)
