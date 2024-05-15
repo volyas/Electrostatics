@@ -44,14 +44,14 @@ var current = 1d;
 //    centersZ[i] = (sources[i].Point.Z + receiverLines[i].PointN.Z) / 2;
 //}
 
-var sources = new Source[10];
+var sources = new Source[5];
 var receiverLines = new ReceiverLine[sources.Length];
 var potentialDifferences = new double[sources.Length];
 var centersZ = new double[sources.Length];
 
 for (var i = 0; i < sources.Length; i++)
 {
-    sources[i] = new Source(new Node2D(0.05, 0 - 1 * i), current);
+    sources[i] = new Source(new Node2D(0.05, -1 - 1 * i), current);
     receiverLines[i] = new ReceiverLine(
         new Node2D(sources[i].Point.R, sources[i].Point.Z - 1),
         new Node2D(sources[i].Point.R, sources[i].Point.Z - 2)

@@ -108,13 +108,13 @@ var conditions = firstBoundaryProvider.GetConditions(trueGrid.Nodes.RLength - 1,
 ////var centersZ = new double[59];
 
 var current = 1d;
-var sources = new Source[10];
+var sources = new Source[7];
 var receivesrLines = new ReceiverLine[sources.Length];
 var truePotentialDifferences = new double[sources.Length];
 var centersZ = new double[sources.Length];
 for (var i = 0; i < sources.Length; i++)
 {
-    sources[i] = new Source(new Node2D(0.05, -131 - 1 * i), current);
+    sources[i] = new Source(new Node2D(0.05, -1 - 1 * i), current);
     receivesrLines[i] = new ReceiverLine(
         new Node2D(sources[i].Point.R, sources[i].Point.Z - 1),
         new Node2D(sources[i].Point.R, sources[i].Point.Z - 2)
@@ -132,7 +132,7 @@ for (var i = 0; i < sources.Length; i++)
 //    centersZ[i] = (sources[i].Point.Z + receivesrLine[i].PointN.Z) / 2;
 //}
 var directProblemSolver = new DirectProblemSolver();
-var resultO = new ResultIO("../DirectProblem/Results/");
+//var resultO = new ResultIO("../DirectProblem/Results/");
 // ищем решение для каждого источника
 for (var i = 0; i < sources.Length; i++)
 {
@@ -158,6 +158,7 @@ for (var i = 0; i < sources.Length; i++)
     truePotentialDifferences[i] = potentialM - potentialN;
 
     CourseHolder.GetInfo(i, 0);
+    Console.WriteLine();
 }
 Console.WriteLine("DirectProblem solved!\n");
 // задаём параметры области для обратной задачи
@@ -178,7 +179,7 @@ var targetParameters = new InverseProblem.Assembling.Parameter[]
 //var initialValues = new Vector(new[] { 0.005, 0.08 });
 //var trueValues = new Vector(new[] { 1d / 3 });
 //var initialValues = new Vector(new[] { 0.08 }); //50 итераций 0,3019425292860777
-var initialValues = new Vector(new[] { 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1 });
+var initialValues = new Vector(new[] { 0.1, 0.1, 0.1, 0.1, 0.1, 0.1});
 var gaussElimination = new GaussElimination();
 var regularizer = new Regularizer(gaussElimination, targetParameters);
 

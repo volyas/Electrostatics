@@ -116,7 +116,7 @@ public class InverseProblemSolver
         var functionality = 1d;
         Equation<Matrix> equation = null!;
         var resultO = new ResultIO("../InverseProblem/Results/");
-        resultO.WriteInverseProblemResult(_receivers, equation.Solution, $"potentialDifferencesIteration_0.txt");
+        //resultO.WriteInverseProblemResult(_receivers, equation.Solution, $"potentialDifferencesIteration_0.txt");
         for (var i = 1; i <= MethodsConfig.MaxIterations && functionality > MethodsConfig.FuncEps; i++)
         {
             equation = _slaeAssembler.Build();
