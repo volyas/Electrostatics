@@ -12,7 +12,7 @@ using System.Globalization;
 Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
 
 var gridBuilder2D = new GridBuilder2D();
-var grid = Grids.GetModel6();
+var grid = Grids.GetModel7();
  
 
 var gridO = new GridIO("../DirectProblem/Results/");
