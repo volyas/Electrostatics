@@ -115,7 +115,8 @@ public class InverseProblemSolver
 
         var functionality = 1d;
         Equation<Matrix> equation = null!;
-
+        var resultO = new ResultIO("../InverseProblem/Results/");
+        resultO.WriteInverseProblemResult(_receivers, equation.Solution, $"potentialDifferencesIteration_0.txt");
         for (var i = 1; i <= MethodsConfig.MaxIterations && functionality > MethodsConfig.FuncEps; i++)
         {
             equation = _slaeAssembler.Build();
@@ -136,13 +137,16 @@ public class InverseProblemSolver
             UpdateParameters(equation.Solution);
 
             functionality = _slaeAssembler.CalculateFunctionality();
+            
             for (var k = 0; k < _bufferVector.Count; k++)
             {
                 Console.WriteLine($"{equation.Solution[k]} {_bufferVector[k]}");
+                
             }
-
+            
+            resultO.WriteInverseProblemResult(_receivers, equation.Solution, $"potentialDifferencesIteration_{i}.txt");
             CourseHolder.GetFunctionalityInfo(i, functionality);
-            var resultO = new ResultIO("../InverseProblem/Results/");
+            
             resultO.WriteConductivity($"conductivity_{i}.txt", _sigmas);
             Console.WriteLine();
         }

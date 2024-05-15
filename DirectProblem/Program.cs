@@ -12,7 +12,7 @@ using System.Globalization;
 Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
 
 var gridBuilder2D = new GridBuilder2D();
-var grid = Grids.GetModel7();
+var grid = Grids.GetModel8();
  
 
 var gridO = new GridIO("../DirectProblem/Results/");
@@ -20,11 +20,14 @@ gridO.WriteMaterials(grid, "nvkat2d.dat");
 gridO.WriteElements(grid, "nvtr.dat");
 gridO.WriteNodes(grid, "rz.dat");
 
+//var materialFactory = new MaterialFactory
+//(
+//    new List<double> { 0.5, 0.1, 0.05, 0.2, 1d / 3, 0d, 1d }
+//);
 var materialFactory = new MaterialFactory
 (
-    new List<double> { 0.5, 0.1, 0.05, 0.2, 1d / 3, 0d, 1d }
+    new List<double> { 0.01, 0.025, 0.1, 0.2, 1d / 3, 0.5, 0d, 1d }
 );
-
 var current = 1d;
 
 //var sources = new Source[59];
@@ -104,7 +107,7 @@ var solution = directProblemSolver
     .SetSource(new Source(new Node2D(0.05, -5), 1))
     .SetFirstConditions(conditions)
     .Solve();
-resultO.WriteResult(solution, "v2.dat");
+resultO.WriteBinaryResult(solution, "v2.dat");
 var femSolution = new FEMSolution(grid, solution, localBasisFunctionsProvider);
 for (var i = 0; i < sources.Length; i++)
 {
@@ -114,4 +117,4 @@ for (var i = 0; i < sources.Length; i++)
 
 //
 
-resultO.Write($"potentialDifferences.txt", potentialDifferences, centersZ);
+resultO.WriteDirectProblemResult($"potentialDifferences.txt", potentialDifferences, centersZ);

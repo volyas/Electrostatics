@@ -1,5 +1,6 @@
 ﻿using DirectProblem.Core.Base;
 using DirectProblem.Core.GridComponents;
+using System.Net.NetworkInformation;
 
 namespace DirectProblem.IO;
 
@@ -28,7 +29,7 @@ public class ResultIO
         }
     }
 
-    public void Write(string fileName, double[] potentialDifferences, double[] centersZ)
+    public void WriteDirectProblemResult(string fileName, double[] potentialDifferences, double[] centersZ)
     {
         using var streamWriter = new StreamWriter(_path + fileName);
 
@@ -43,13 +44,31 @@ public class ResultIO
             streamWriter.Write($"{potentialDifference} ");
         }
     }
-    public void WriteResult(Vector solution, string fileName)
+    public void WriteBinaryResult(Vector solution, string fileName)
     {
         using var binaryWriter = new BinaryWriter(File.Open(_path + fileName, FileMode.OpenOrCreate));
 
         for (var i = 0; i < solution.Count; i++)
         {
             binaryWriter.Write(solution[i]);
+        }
+    }
+    public void WriteInverseProblemResult(ReceiverLine[] receivers, Vector solution, string fileName)
+    {
+        using var streamWriter = new StreamWriter(_path + fileName);
+
+        foreach (var receiver in receivers)
+        {
+            streamWriter.Write($"{receiver.PointM.Z} ");
+        }
+
+        streamWriter.WriteLine();
+
+        for (var i = 0; i < solution.Count; i++)
+        {   
+            streamWriter.Write($"{solution[i]} ");
+
+            streamWriter.WriteLine();
         }
     }
     public void WriteConductivity(string fileName, double[] sigmas)

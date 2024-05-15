@@ -37,15 +37,15 @@ var zSplitParameters = new AxisSplitParameter(new[]
 var areas = new Area[]
 {
     new(5, new Node2D(0d, -10d), new Node2D(0.1, 0d)),
-    new(0, new Node2D(0.1, -4d), new Node2D(5d, 0d)),
-    new(3, new Node2D(5d, -5d), new Node2D(8d, 0d)),
-    new(2, new Node2D(8d, -4d), new Node2D(10d, 0d)),
-    new(2, new Node2D(0.1, -5d), new Node2D(5d, -4d)),
-    new(4, new Node2D(0.1, -5d), new Node2D(5d, -4d)),
-    new(1, new Node2D(8d, -5d), new Node2D(10d, -4d)),
-    new(0, new Node2D(5d, -6d), new Node2D(10d, -5d)),
-    new(1, new Node2D(0.1, -10d), new Node2D(8d, -6d)),
-    new(3, new Node2D(8, -10d), new Node2D(10d, -6d))
+                new(0, new Node2D(0.1, -4d), new Node2D(5d, 0d)),
+                new(3, new Node2D(5d, -5d), new Node2D(8d, 0d)),
+                new(2, new Node2D(8d, -4d), new Node2D(10d, 0d)),
+                new(2, new Node2D(0.1, -5d), new Node2D(5d, -4d)),
+                new(4, new Node2D(0.1, -6d), new Node2D(5d, -5d)),
+                new(1, new Node2D(8d, -5d), new Node2D(10d, -4d)),
+                new(0, new Node2D(5d, -6d), new Node2D(10d, -5d)),
+                new(1, new Node2D(0.1, -10d), new Node2D(8d, -6d)),
+                new(3, new Node2D(8d, -10d), new Node2D(10d, -6d))
 };
 
 //var rSplitParameters = new AxisSplitParameter(new[]
@@ -98,6 +98,7 @@ var trueSigmas = new MaterialFactory
 var localBasisFunctionsProvider = new LocalBasisFunctionsProvider(trueGrid, new LinearFunctionsProvider());
 
 var firstBoundaryProvider = new FirstBoundaryProvider(trueGrid);
+var conditions = firstBoundaryProvider.GetConditions(trueGrid.Nodes.RLength - 1, trueGrid.Nodes.ZLength - 1);
 var firstConditions = firstBoundaryProvider.GetConditions(64, 430);
 
 // инициализируем источники и приёмники

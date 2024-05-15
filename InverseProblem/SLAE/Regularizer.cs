@@ -76,6 +76,8 @@ public class Regularizer
                 for (var i = 0; i < alphas.Count; i++)
                 {
                     alphas[i] *= 1.5;
+                    Console.Write($"alpha_{i} changed to {alphas[i]}");
+                    Console.WriteLine();
                 }
             }
         }
@@ -110,7 +112,7 @@ public class Regularizer
 
         for (var i = 0; i < alphas.Count; i++)
         {
-            var changeRatio = equation.Solution[i] / _previousSolution[i];
+            var changeRatio = equation.Solution[i] / BufferVector[i];
 
             if (CheckLocalConstraints(changeRatio) &&
                 CheckGlobalConstraints(BufferVector[i])) continue;
@@ -119,7 +121,8 @@ public class Regularizer
 
             alphas[i] *= 1.5;
 
-            Console.WriteLine($"alpha{i} increased to {alphas[i]}                          \r");
+            Console.Write($"alpha_{i} changed to {alphas[i]}");
+            Console.WriteLine();
 
             stop = false;
         }
