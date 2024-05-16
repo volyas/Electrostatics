@@ -12,6 +12,7 @@ using DirectProblem.Core.Base;
 using InverseProblem;
 using InverseProblem.SLAE;
 using System.Globalization;
+using DirectProblem.IO;
 
 Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
 // инициализируем и задаём истинную сетку
@@ -165,7 +166,8 @@ Console.WriteLine("DirectProblem solved!\n");
 // задаём параметры области для обратной задачи
 
 var sigmas = new[] { 0.01, 0.025, 0.08, 0.1, 0.2, 1d / 3, 0.45, 0.5 };
-
+var resultO = new ResultIO("../InverseProblem/Results/");
+resultO.WriteConductivity($"trueConductivity.txt", sigmas);
 var targetParameters = new InverseProblem.Assembling.Parameter[]
 {
     new (ParameterType.Sigma, 0),
