@@ -176,6 +176,7 @@ public class SLAEAssembler {
         CalculatePotentialDifferences(_potentialDifferences);
         var resultO = new ResultIO("../InverseProblem/Results/");
         resultO.WriteInverseProblemResult(_receiversLines, _potentialDifferences, $"potentialDifferencesIteration_{iteration}.txt");
+        iteration++;
         //считаем производные по каждому параметру
         //Parallel.For(0, _parameters.Length, i =>
         //{
