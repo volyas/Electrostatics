@@ -6,17 +6,14 @@ using DirectProblem.GridGenerator.Intervals.Splitting;
 using DirectProblem.TwoDimensional.Assembling.Boundary;
 using DirectProblem.TwoDimensional.Assembling.Local;
 using DirectProblem.TwoDimensional;
-using DirectProblem.Core;
-using DirectProblem.TwoDimensional.Assembling.Global;
-using DirectProblem.TwoDimensional.Assembling;
 using DirectProblem.TwoDimensional.Parameters;
-using DirectProblem.IO;
-using System.Reflection.Metadata;
 using InverseProblem.Assembling;
 using DirectProblem.Core.Base;
 using InverseProblem;
 using InverseProblem.SLAE;
+using System.Globalization;
 
+Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
 // инициализируем и задаём истинную сетку
 var gridBuilder2D = new GridBuilder2D();
 var rSplitParameters = new AxisSplitParameter(new[]
