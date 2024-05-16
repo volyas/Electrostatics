@@ -67,8 +67,6 @@ public class ResultIO
         for (var i = 0; i < solution.Count; i++)
         {   
             streamWriter.Write($"{solution[i]} ");
-
-            streamWriter.WriteLine();
         }
     }
     public void WriteConductivity(string fileName, double[] sigmas)
