@@ -9,6 +9,7 @@ using DirectProblem.GridGenerator;
 using DirectProblem.TwoDimensional.Assembling.Local;
 using DirectProblem.TwoDimensional;
 using DirectProblem.GridGenerator.Intervals.Splitting;
+using DirectProblem.IO;
 
 namespace InverseProblem.Assembling;
 
@@ -36,6 +37,7 @@ public class SLAEAssembler {
     private Grid<Node2D> _grid;
     private LocalBasisFunctionsProvider _localBasisFunctionsProvider;
     private FEMSolution _femSolution;
+    private int iteration = 0;
     public SLAEAssembler(
             GridBuilder2D gridBuilder2D,
             DirectProblemSolver directProblemSolver,
@@ -172,7 +174,8 @@ public class SLAEAssembler {
         //решаем прямую задачу с начальными параметрами
         AssembleDirectProblem();
         CalculatePotentialDifferences(_potentialDifferences);
-
+        var resultO = new ResultIO("../InverseProblem/Results/");
+        resultO.WriteInverseProblemResult(_receiversLines, _potentialDifferences, $"potentialDifferencesIteration_{iteration}.txt");
         //считаем производные по каждому параметру
         //Parallel.For(0, _parameters.Length, i =>
         //{

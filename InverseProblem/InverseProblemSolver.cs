@@ -143,8 +143,7 @@ public class InverseProblemSolver
                 Console.WriteLine($"{equation.Solution[k]} {_bufferVector[k]}");
                 
             }
-            
-            resultO.WriteInverseProblemResult(_receivers, equation.Solution, $"potentialDifferencesIteration_{i}.txt");
+                        
             CourseHolder.GetFunctionalityInfo(i, functionality);
             
             resultO.WriteConductivity($"conductivity_{i}.txt", _sigmas);
@@ -152,6 +151,7 @@ public class InverseProblemSolver
         }
 
         Console.WriteLine();
+        resultO.WriteInverseProblemResult(_receivers, _truePotentialDifferences, "truePotentialDifferences.txt");
 
         return equation.Solution;
     }

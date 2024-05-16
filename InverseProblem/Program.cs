@@ -33,14 +33,14 @@ var zSplitParameters = new AxisSplitParameter(new[]
 
 var areas = new Area[]
 {
-    new(5, new Node2D(0d, -10d), new Node2D(0.1, 0d)),
+    new(7, new Node2D(0d, -10d), new Node2D(0.1, 0d)),
                 new(0, new Node2D(0.1, -4d), new Node2D(5d, 0d)),
                 new(3, new Node2D(5d, -5d), new Node2D(8d, 0d)),
                 new(2, new Node2D(8d, -4d), new Node2D(10d, 0d)),
-                new(2, new Node2D(0.1, -5d), new Node2D(5d, -4d)),
+                new(5, new Node2D(0.1, -5d), new Node2D(5d, -4d)),
                 new(4, new Node2D(0.1, -6d), new Node2D(5d, -5d)),
                 new(1, new Node2D(8d, -5d), new Node2D(10d, -4d)),
-                new(0, new Node2D(5d, -6d), new Node2D(10d, -5d)),
+                new(6, new Node2D(5d, -6d), new Node2D(10d, -5d)),
                 new(1, new Node2D(0.1, -10d), new Node2D(8d, -6d)),
                 new(3, new Node2D(8d, -10d), new Node2D(10d, -6d))
 };
@@ -87,9 +87,13 @@ var trueGrid = gridBuilder2D
 .SetAreas(areas)
 .Build();
 
+//var trueSigmas = new MaterialFactory
+//(
+//    new List<double> { 0.01, 0.025, 0.1, 0.2, 1d / 3, 0.5, 0d, 1d }
+//);
 var trueSigmas = new MaterialFactory
 (
-    new List<double> { 0.01, 0.025, 0.1, 0.2, 1d / 3, 0.5, 0d, 1d }
+    new List<double> { 0.01, 0.025, 0.08, 0.1, 0.2, 1d / 3, 0.45, 0.5 }
 );
 
 var localBasisFunctionsProvider = new LocalBasisFunctionsProvider(trueGrid, new LinearFunctionsProvider());
@@ -105,16 +109,16 @@ var conditions = firstBoundaryProvider.GetConditions(trueGrid.Nodes.RLength - 1,
 ////var centersZ = new double[59];
 
 var current = 1d;
-var sources = new Source[7];
+var sources = new Source[10];
 var receivesrLines = new ReceiverLine[sources.Length];
 var truePotentialDifferences = new double[sources.Length];
 var centersZ = new double[sources.Length];
 for (var i = 0; i < sources.Length; i++)
 {
-    sources[i] = new Source(new Node2D(0.05, -1 - 1 * i), current);
+    sources[i] = new Source(new Node2D(0.05, -2 - 0.5 * i), current);
     receivesrLines[i] = new ReceiverLine(
-        new Node2D(sources[i].Point.R, sources[i].Point.Z - 1),
-        new Node2D(sources[i].Point.R, sources[i].Point.Z - 2)
+        new Node2D(sources[i].Point.R, sources[i].Point.Z - 0.5),
+        new Node2D(sources[i].Point.R, sources[i].Point.Z - 1)
     );
     centersZ[i] = (sources[i].Point.Z + receivesrLines[i].PointN.Z) / 2;
 }
@@ -160,7 +164,7 @@ for (var i = 0; i < sources.Length; i++)
 Console.WriteLine("DirectProblem solved!\n");
 // задаём параметры области для обратной задачи
 
-var sigmas = new[] { 0.01, 0.025, 0.1, 0.2, 1d / 3, 0.5, 0d, 1d };
+var sigmas = new[] { 0.01, 0.025, 0.08, 0.1, 0.2, 1d / 3, 0.45, 0.5 };
 
 var targetParameters = new InverseProblem.Assembling.Parameter[]
 {
@@ -169,14 +173,16 @@ var targetParameters = new InverseProblem.Assembling.Parameter[]
     new (ParameterType.Sigma, 2),
     new (ParameterType.Sigma, 3),
     new (ParameterType.Sigma, 4),
-    new (ParameterType.Sigma, 5)
+    new (ParameterType.Sigma, 5),
+    new (ParameterType.Sigma, 6),
+    new (ParameterType.Sigma, 7)
 };
 
 //var trueValues = new Vector(new[] { 0.05, 1d / 3 });
 //var initialValues = new Vector(new[] { 0.005, 0.08 });
 //var trueValues = new Vector(new[] { 1d / 3 });
 //var initialValues = new Vector(new[] { 0.08 }); //50 итераций 0,3019425292860777
-var initialValues = new Vector(new[] { 0.1, 0.1, 0.1, 0.1, 0.1, 0.1});
+var initialValues = new Vector(new[] { 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1 });
 var gaussElimination = new GaussElimination();
 var regularizer = new Regularizer(gaussElimination, targetParameters);
 

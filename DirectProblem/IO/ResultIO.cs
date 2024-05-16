@@ -53,7 +53,7 @@ public class ResultIO
             binaryWriter.Write(solution[i]);
         }
     }
-    public void WriteInverseProblemResult(ReceiverLine[] receivers, Vector solution, string fileName)
+    public void WriteInverseProblemResult(ReceiverLine[] receivers, double[] solution, string fileName)
     {
         using var streamWriter = new StreamWriter(_path + fileName);
 
@@ -64,7 +64,7 @@ public class ResultIO
 
         streamWriter.WriteLine();
 
-        for (var i = 0; i < solution.Count; i++)
+        for (var i = 0; i < solution.Length; i++)
         {   
             streamWriter.Write($"{solution[i]} ");
         }
