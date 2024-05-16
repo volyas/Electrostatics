@@ -250,7 +250,7 @@ public class Grids
 
         return grid;
     }
-    public static Grid<Node2D> GetModel8()
+    public static Grid<Node2D> GetModel8() //6 сигм, сетка 1
     {
         var grid = GridBuilder
         .SetRAxis(new AxisSplitParameter(
@@ -286,7 +286,7 @@ public class Grids
 
         return grid;
     }
-    public static Grid<Node2D> GetModel9() 
+    public static Grid<Node2D> GetModel9() //8 сигм, сетка 1
     {
         var grid = GridBuilder
         .SetRAxis(new AxisSplitParameter(
@@ -317,6 +317,78 @@ public class Grids
                 new(6, new Node2D(5d, -6d), new Node2D(10d, -5d)),
                 new(1, new Node2D(0.1, -10d), new Node2D(8d, -6d)),
                 new(3, new Node2D(8d, -10d), new Node2D(10d, -6d))
+            })
+            .Build();
+
+        return grid;
+    }
+    public static Grid<Node2D> GetModel10() //8 сигм, сетка 2
+    {
+        var grid = GridBuilder
+        .SetRAxis(new AxisSplitParameter(
+                    new[] { 0d, 0.1, 5d, 8d, 10d },
+                    new UniformSplitter(4),
+                    new NonUniformStepSplitter(0.025, 1.05),
+                    new NonUniformStepSplitter(0.260, 1.05),
+                    new NonUniformStepSplitter(0.380, 1.05)
+                )
+            )
+            .SetZAxis(new AxisSplitParameter(
+                    new[] { -10d, -6d, -5d, -4d, 0d },
+                    new NonUniformStepSplitter(0.025, 1 / 1.05),
+                    new UniformStepSplitter(0.025),
+                    new UniformStepSplitter(0.025),
+                    new NonUniformStepSplitter(0.025, 1.05)
+                )
+            )
+            .SetAreas(new Area[]
+            {
+                new(7, new Node2D(0d, -10d), new Node2D(0.1, 0d)),
+                new(0, new Node2D(0.1, -4d), new Node2D(10, 0d)),
+                new(2, new Node2D(0.1, -5d), new Node2D(5d, -4d)),
+                new(4, new Node2D(5d, -5d), new Node2D(8d, -4d)),
+                new(1, new Node2D(8d, -5d), new Node2D(10d, -4d)),
+                new(5, new Node2D(0.1, -6d), new Node2D(5d, -5d)),
+                new(3, new Node2D(5d, -6d), new Node2D(8d, -5d)),
+                new(6, new Node2D(8d, -6d), new Node2D(10d, -5d)),
+                new(2, new Node2D(0.1, -10d), new Node2D(5d, -6d)),
+                new(0, new Node2D(5d, -10d), new Node2D(8d, -6d)),
+                new(1, new Node2D(8d, -10d), new Node2D(10d, -6d))
+            })
+            .Build();
+
+        return grid;
+    }
+    public static Grid<Node2D> GetModel11() //8 сигм, сетка 3
+    {
+        var grid = GridBuilder
+        .SetRAxis(new AxisSplitParameter(
+                    new[] { 0d, 0.1, 5d, 8d, 10d },
+                    new UniformSplitter(4),
+                    new NonUniformStepSplitter(0.025, 1.05),
+                    new NonUniformStepSplitter(0.260, 1.05),
+                    new NonUniformStepSplitter(0.380, 1.05)
+                )
+            )
+            .SetZAxis(new AxisSplitParameter(
+                    new[] { -10d, -6d, -5d, -4d, 0d },
+                    new NonUniformStepSplitter(0.025, 1 / 1.05),
+                    new UniformStepSplitter(0.025),
+                    new UniformStepSplitter(0.025),
+                    new NonUniformStepSplitter(0.025, 1.05)
+                )
+            )
+            .SetAreas(new Area[]
+            {
+                new(7, new Node2D(0d, -10d), new Node2D(0.1, 0d)),                
+                new(4, new Node2D(5d, -4d), new Node2D(8d, 0d)),
+                new(1, new Node2D(0.1, -4d), new Node2D(5, 0d)),
+                new(5, new Node2D(5d, -5d), new Node2D(8d, -4d)),
+                new(2, new Node2D(5d, -6d), new Node2D(8d, -5d)),
+                new(6, new Node2D(0.1, -6d), new Node2D(5d, -4d)),
+                new(3, new Node2D(0.1, -10d), new Node2D(5d, -6d)),
+                new(1, new Node2D(5d, -10d), new Node2D(8d, -6d)),
+                new(4, new Node2D(8d, -10d), new Node2D(10d, 0d))
             })
             .Build();
 
