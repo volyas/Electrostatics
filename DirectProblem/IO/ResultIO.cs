@@ -76,6 +76,7 @@ public class ResultIO
         foreach (var sigma in sigmas)
         {
             streamWriter.Write($"{sigma} ");
+            streamWriter.WriteLine();
         }
     }
 

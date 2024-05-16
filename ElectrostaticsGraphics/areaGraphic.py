@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from matplotlib import patches
 
 path = "..\\InverseProblem\\Results\\"
-data = np.loadtxt(path + 'conductivity_5.txt')
+data = np.loadtxt(path + 'conductivity_7.txt')
 rectangles = [(0.0, -10.0, 0.1, 10.0, data[5]),
               (0.1, -4.0, 4.9, 4.0, data[0]),
               (5.0, -5.0, 3.0, 5.0, data[3]),
@@ -48,7 +48,7 @@ ax.set_ylim(-10, 0)
 plt.xlabel('R, м')
 plt.ylabel('Z, м')
 ax.set_aspect('equal', adjustable='box')
-i = 5
+i = 7
 plt.title(f'Исследуемая область, итерация  {i-1}')
 sm = plt.cm.ScalarMappable(cmap=plt.cm.rainbow)
 sm.set_clim(0, 0.5)
