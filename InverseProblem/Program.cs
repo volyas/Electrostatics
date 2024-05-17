@@ -35,15 +35,15 @@ var zSplitParameters = new AxisSplitParameter(new[]
 var areas = new Area[]
 {
     new(7, new Node2D(0d, -10d), new Node2D(0.1, 0d)),
-    new(4, new Node2D(5d, -4d), new Node2D(8d, 0d)),
-    new(1, new Node2D(0.1, -4d), new Node2D(5d, 0d)),
-    new(5, new Node2D(5d, -5d), new Node2D(8d, -4d)),
-    new(2, new Node2D(5d, -6d), new Node2D(8d, -5d)),
-    new(1, new Node2D(0.1, -6d), new Node2D(5d, -4d)),
-    new(3, new Node2D(0.1, -10d), new Node2D(5d, -6d)),
-    new(1, new Node2D(5d, -10d), new Node2D(8d, -6d)),
-    new(2, new Node2D(8d, -5d), new Node2D(10d, 0d)),
-    new(4, new Node2D(8d, -10d), new Node2D(10d, -5d))
+    new(0, new Node2D(0.1, -4d), new Node2D(5d, 0d)),
+    new(3, new Node2D(5d, -5d), new Node2D(8d, 0d)),
+    new(2, new Node2D(8d, -4d), new Node2D(10d, 0d)),
+    new(5, new Node2D(0.1, -5d), new Node2D(5d, -4d)),
+    new(4, new Node2D(0.1, -6d), new Node2D(5d, -5d)),
+    new(1, new Node2D(8d, -5d), new Node2D(10d, -4d)),
+    new(6, new Node2D(5d, -6d), new Node2D(10d, -5d)),
+    new(1, new Node2D(0.1, -10d), new Node2D(8d, -6d)),
+    new(3, new Node2D(8d, -10d), new Node2D(10d, -6d))
 };
 
 //var rSplitParameters = new AxisSplitParameter(new[]
@@ -170,13 +170,13 @@ var resultO = new ResultIO("../InverseProblem/Results/");
 resultO.WriteConductivity($"trueConductivity.txt", sigmas);
 var targetParameters = new InverseProblem.Assembling.Parameter[]
 {
-    //new (ParameterType.Sigma, 0),
+    new (ParameterType.Sigma, 0),
     new (ParameterType.Sigma, 1),
     new (ParameterType.Sigma, 2),
     new (ParameterType.Sigma, 3),
     new (ParameterType.Sigma, 4),
     new (ParameterType.Sigma, 5),
-    //new (ParameterType.Sigma, 6),
+    new (ParameterType.Sigma, 6),
     new (ParameterType.Sigma, 7)
 };
 
@@ -184,7 +184,7 @@ var targetParameters = new InverseProblem.Assembling.Parameter[]
 //var initialValues = new Vector(new[] { 0.005, 0.08 });
 //var trueValues = new Vector(new[] { 1d / 3 });
 //var initialValues = new Vector(new[] { 0.08 }); //50 итераций 0,3019425292860777
-var initialValues = new Vector(new[] { /*0.1,*/ 0.1, 0.1, 0.1, 0.1, 0.1, /*0.1,*/ 0.1 });
+var initialValues = new Vector(new[] { 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1 });
 var gaussElimination = new GaussElimination();
 var regularizer = new Regularizer(gaussElimination, targetParameters);
 
