@@ -35,15 +35,15 @@ var zSplitParameters = new AxisSplitParameter(new[]
 var areas = new Area[]
 {
     new(7, new Node2D(0d, -10d), new Node2D(0.1, 0d)),
-    new(0, new Node2D(0.1, -4d), new Node2D(5d, 0d)),
-    new(3, new Node2D(5d, -5d), new Node2D(8d, 0d)),
-    new(2, new Node2D(8d, -4d), new Node2D(10d, 0d)),
-    new(5, new Node2D(0.1, -5d), new Node2D(5d, -4d)),
-    new(4, new Node2D(0.1, -6d), new Node2D(5d, -5d)),
-    new(1, new Node2D(8d, -5d), new Node2D(10d, -4d)),
-    new(6, new Node2D(5d, -6d), new Node2D(10d, -5d)),
-    new(1, new Node2D(0.1, -10d), new Node2D(8d, -6d)),
-    new(3, new Node2D(8d, -10d), new Node2D(10d, -6d))
+                new(6, new Node2D(5d, -4d), new Node2D(8d, 0d)),
+                new(1, new Node2D(0.1, -4d), new Node2D(5d, 0d)),
+                new(5, new Node2D(5d, -5d), new Node2D(8d, -4d)),
+                new(2, new Node2D(5d, -6d), new Node2D(8d, -5d)),
+                new(1, new Node2D(0.1, -6d), new Node2D(5d, -4d)),
+                new(3, new Node2D(0.1, -10d), new Node2D(5d, -6d)),
+                new(0, new Node2D(5d, -10d), new Node2D(8d, -6d)),
+                new(2, new Node2D(8d, -5d), new Node2D(10d, 0d)),
+                new(4, new Node2D(8d, -10d), new Node2D(10d, -5d))
 };
 
 //var rSplitParameters = new AxisSplitParameter(new[]
@@ -165,7 +165,7 @@ for (var i = 0; i < sources.Length; i++)
 Console.WriteLine("DirectProblem solved!\n");
 // задаём параметры области для обратной задачи
 
-var sigmas = new[] { 0.01, 0.025, 0.08, 0.1, 0.2, 1d / 3, 0.045, 0.5 };
+var sigmas = new[] { 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1 };
 var resultO = new ResultIO("../InverseProblem/Results/");
 resultO.WriteConductivity($"trueConductivity.txt", sigmas);
 var targetParameters = new InverseProblem.Assembling.Parameter[]
