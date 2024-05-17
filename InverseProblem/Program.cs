@@ -115,7 +115,7 @@ var targetParameters = new InverseProblem.Assembling.Parameter[]
 };
 var initialValues = new Vector(new[] { 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1 });
 var gaussElimination = new GaussElimination();
-var regularizer = new Regularizer(gaussElimination, targetParameters);
+var regularizer = new Regularizer(gaussElimination);
 
 var inverseProblemSolver = new InverseProblemSolver(gridBuilder2D, gaussElimination, regularizer);
     var solution = inverseProblemSolver

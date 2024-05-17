@@ -9,13 +9,11 @@ public class Regularizer
     private readonly GaussElimination _gaussElimination;
     public Matrix BufferMatrix { get; set; }
     public Vector BufferVector { get; set; }
-    private readonly Vector _previousSolution;
 
 
-    public Regularizer(GaussElimination gaussElimination, Parameter[] parameters)
+    public Regularizer(GaussElimination gaussElimination)
     {
         _gaussElimination = gaussElimination;
-        _previousSolution = new Vector(parameters.Length);
 
     }
     private Vector CalculateAlpha(Matrix matrix)
