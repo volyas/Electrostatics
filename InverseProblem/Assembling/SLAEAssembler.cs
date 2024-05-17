@@ -140,22 +140,6 @@ public class SLAEAssembler {
 
     private void CalculatePotentialDifferences(double[] potentialDifference)
     {
-        //Parallel.For(0, _sources.Length, i =>
-        //{
-        //    var solution = _directProblemSolver
-        //    .SetGrid(_grid)
-        //    .SetMaterials(_sigmas)
-        //    .SetSource(_sources[i])
-        //    .SetFirstConditions(_firstConditions)
-        //    .Solve();
-
-        //    _localBasisFunctionsProvider = new LocalBasisFunctionsProvider(_grid, LinearFunctionsProvider);
-        //    _femSolution = new FEMSolution(_grid, solution, _localBasisFunctionsProvider);
-        //    var potentialM = _femSolution.Calculate(_receiversLines[i].PointM);
-        //    var potentialN = _femSolution.Calculate(_receiversLines[i].PointN);
-
-        //    potentialDifference[i] = potentialM - potentialN;
-        //});
         for (var i = 0; i < _sources.Length; i++)
         {
             var solution = _directProblemSolver
@@ -176,28 +160,6 @@ public class SLAEAssembler {
     }
     private void CalculateDerivatives()
     {
-        //решаем прямую задачу с начальными параметрами
-        
-        //CalculatePotentialDifferences(_potentialDifferences);
-        
-        
-        //считаем производные по каждому параметру
-        //Parallel.For(0, _parameters.Length, i =>
-        //{
-        //    var parameterValue = GetParameter(_parameters[i]);
-        //    var delta = parameterValue / 10;
-
-        //    SetParameter(_parameters[i], parameterValue + delta);
-
-        //    CalculatePotentialDifferences(_derivativesPotentialDifferences[i]);
-
-        //    SetParameter(_parameters[i], parameterValue);
-        //    for (var j = 0; j < _sources.Length; j++)
-        //    {
-        //        _derivativesPotentialDifferences[i][j] =
-        //            (_derivativesPotentialDifferences[i][j] - _potentialDifferences[j]) / delta;
-        //    }
-        //});
         for (var i = 0; i < _parameters.Length; i++)
         {
             var parameterValue = GetParameter(_parameters[i]);
