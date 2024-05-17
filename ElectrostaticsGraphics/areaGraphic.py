@@ -2,20 +2,20 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import patches
 
-path = "..\\InverseProblem\\Results\\3 модель\\"
+path = "..\\InverseProblem\\Results\\3 v\\"
 data = np.loadtxt(path + 'trueConductivity.txt')
-#data = np.loadtxt(path + 'conductivity_8.txt')
-k = 8
+#data = np.loadtxt(path + 'conductivity_0.txt')
+k = 0
 rectangles = [(0.0, -10.0, 0.1, 10.0, data[7]), #3 модель
               (0.1, -4.0, 4.9, 4.0, data[6]),
               (5.0, -4.0, 3.0, 4.0, data[1]),
               (0.1, -6.0, 4.9, 2.0, data[5]),
               (5.0, -5.0, 3.0, 1.0, data[2]),
-              (5.0, -6.0, 3.0, 1.0, data[4]),
+              (5.0, -6.0, 3.0, 1.0, data[1]),
               (0.1, -10.0, 4.9, 4.0, data[3]),
-              (5.0, -10.0, 3.0, 4.0, data[1]),
-              (8.0, -5.0, 2.0, 5.0, data[0]),
-              (8.0, -10.0, 2.0, 5.0, data[2])]
+              (5.0, -10.0, 3.0, 4.0, data[0]),
+              (8.0, -5.0, 2.0, 5.0, data[2]),
+              (8.0, -10.0, 2.0, 5.0, data[4])]
 # rectangles = [(0.0, -10.0, 0.1, 10.0, data[7]), #2 модель
 #               (0.1, -4.0, 9.9, 4.0, data[0]),
 #               (0.1, -5.0, 4.9, 1.0, data[2]),
@@ -63,7 +63,7 @@ for i, rect_data in enumerate(rectangles):
     ax.add_patch(rectangle)
 
     if i != 0:
-        ax.text(x + width / 2, y + height / 2, f'{conductivity:.2f}', ha='center', va='center', color='black')
+        ax.text(x + width / 2, y + height / 2, f'{conductivity:.4f}', ha='center', va='center', color='black')
 # ax.set_xlim(0, 50)
 # ax.set_ylim(-180, -80)
 ax.set_xlim(0, 10) #полные размеры
