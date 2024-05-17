@@ -34,6 +34,7 @@ def draw_potential_differences_plot_for_iteration(z_coordinate, measurements, it
     plt.ylabel('Z, m')
     plt.title(f'Potential differences on iteration {iteration_number}')
     plt.ylim(-7, -2.5)
+    plt.xlim(0, 9)
     plt.show()
 
 def draw_areas_plot_for_iteration(areas, iteration):
@@ -125,7 +126,7 @@ def draw_areas_plot_for_true_values(areas):
     plt.show()
 
 # Директория, откуда нужно считать файлы
-directory = "..\\InverseProblem\\Results\\3 v\\"
+directory = "..\\InverseProblem\\Results\\"
 
 # Обработка каждого файла в директории
 for file_name in os.listdir(directory):
