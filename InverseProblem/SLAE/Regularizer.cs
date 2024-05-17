@@ -25,7 +25,7 @@ public class Regularizer
 
         for (var i = 0; i < n; i++)
         {
-            alphas[i] = matrix[i, i] * 10e-8;
+            alphas[i] = matrix[i, i] * 1e-8;
             //alphas[i] = 0d;
         }
 
@@ -89,8 +89,6 @@ public class Regularizer
     {
         bool stop;
 
-        equation.Solution.Copy(_previousSolution);
-
         do
         {
             AssembleSLAE(equation, alphas);
@@ -126,8 +124,6 @@ public class Regularizer
 
             stop = false;
         }
-
-        BufferVector.Copy(_previousSolution);
 
         return alphas;
     }

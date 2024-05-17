@@ -75,6 +75,11 @@ public class SLAEAssembler {
         {
             _derivativesPotentialDifferences[i] = new double[_sources.Length];
         }
+
+        AssembleDirectProblem();
+        CalculatePotentialDifferences(_potentialDifferences);
+        var resultO = new ResultIO("../InverseProblem/Results/");
+        resultO.WriteInverseProblemResult(_receiversLines, _potentialDifferences, $"potentialDifferencesIteration_{0}.txt");
     }
 
     private void CalculateWeights()
@@ -172,11 +177,10 @@ public class SLAEAssembler {
     private void CalculateDerivatives()
     {
         //решаем прямую задачу с начальными параметрами
-        AssembleDirectProblem();
-        CalculatePotentialDifferences(_potentialDifferences);
-        var resultO = new ResultIO("../InverseProblem/Results/");
-        resultO.WriteInverseProblemResult(_receiversLines, _potentialDifferences, $"potentialDifferencesIteration_{iteration}.txt");
-        iteration++;
+        
+        //CalculatePotentialDifferences(_potentialDifferences);
+        
+        
         //считаем производные по каждому параметру
         //Parallel.For(0, _parameters.Length, i =>
         //{
@@ -215,6 +219,9 @@ public class SLAEAssembler {
     {
         var functionality = 0d;
         CalculatePotentialDifferences(_potentialDifferences);
+        iteration++;
+        var resultO = new ResultIO("../InverseProblem/Results/");
+        resultO.WriteInverseProblemResult(_receiversLines, _potentialDifferences, $"potentialDifferencesIteration_{iteration}.txt");
         for (var i = 0; i < _sources.Length; i++)
         {
             functionality += _weightsSquares[i] * Math.Pow(_potentialDifferences[i] - _truePotentialDifferences[i], 2);
