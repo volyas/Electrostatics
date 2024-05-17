@@ -2,10 +2,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import patches
 
-path = "..\\InverseProblem\\Results\\1 v\\"
+path = "..\\InverseProblem\\Results\\"
+# path = "..\\InverseProblem\\Results\\1 v\\"
 # data = np.loadtxt(path + 'trueConductivity.txt')
-data = np.loadtxt(path + 'conductivity_11.txt')
-k = 11
+data = np.loadtxt(path + 'conductivity_9.txt')
+k = 10
 # rectangles = [(0.0, -10.0, 0.1, 10.0, data[7]), #3 модель
 #               (0.1, -4.0, 4.9, 4.0, data[6]),
 #               (5.0, -4.0, 3.0, 4.0, data[1]),
