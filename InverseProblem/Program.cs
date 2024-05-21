@@ -117,7 +117,7 @@ var truePotentialDifferences = new double[sources.Length];
 var centersZ = new double[sources.Length];
 for (var i = 0; i < sources.Length; i++)
 {
-    sources[i] = new Source(new Node2D(0.05, -2 - 0.5 * i), current);
+    sources[i] = new Source(new Node2D(0.05, -3 - 0.5 * i), current);
     receivesrLines[i] = new ReceiverLine(
         new Node2D(sources[i].Point.R, sources[i].Point.Z - 0.5),
         new Node2D(sources[i].Point.R, sources[i].Point.Z - 1)
