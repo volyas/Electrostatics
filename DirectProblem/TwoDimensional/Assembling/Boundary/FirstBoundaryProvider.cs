@@ -11,10 +11,13 @@ public class FirstBoundaryProvider
     private readonly Grid<Node2D> _grid;
     private int[][]? _indexes;
     private Vector[]? _values;
+    private readonly Func<Node2D, double> _u;
 
     public FirstBoundaryProvider(Grid<Node2D> grid)
     {
         _grid = grid;
+        _u = node => Math.Exp(node.Z);
+        //_u = node => node.R * node.R - 2 * (node.Z * node.Z);
     }
 
     public FirstConditionValue[] GetConditions(FirstCondition[] conditions)
@@ -44,7 +47,11 @@ public class FirstBoundaryProvider
         for (var i = 0; i < conditions.Length; i++)
         {
             var (indexes, _) = _grid.Elements[conditions[i].ElementIndex].GetBoundNodeIndexes(conditions[i].Bound, _indexes[i]);
-
+            for (var k = 0; k < indexes.Length; k++)
+            {
+                _values[i][k] = _u(_grid.Nodes[indexes[k]]);
+            }
+            
             conditionsValues[i] = new FirstConditionValue(new LocalVector(indexes, _values[i]));
         }
 
@@ -53,7 +60,7 @@ public class FirstBoundaryProvider
 
     public FirstConditionValue[] GetConditions(int elementsByLength, int elementsByHeight)
     {
-        var conditions = new FirstCondition[elementsByHeight + elementsByLength];
+        var conditions = new FirstCondition[2 * (elementsByHeight + elementsByLength)];
 
         var j = 0;
 
@@ -62,9 +69,24 @@ public class FirstBoundaryProvider
         //    conditions[j] = new FirstCondition(i, Bound.Lower);
         //}
 
+        for (var i = 0; i < elementsByLength; i++, j++)
+        {
+            conditions[j] = new FirstCondition(i, Bound.Lower);
+        }
+
+        for (var i = 0; i < elementsByHeight; i++, j++)
+        {
+            conditions[j] = new FirstCondition(i * elementsByLength, Bound.Left);
+        }
+
         for (var i = 0; i < elementsByHeight; i++, j++)
         {
             conditions[j] = new FirstCondition((i + 1) * elementsByLength - 1, Bound.Right);
+        }
+
+        for (var i = elementsByLength * (elementsByHeight - 1); i < elementsByLength * elementsByHeight; i++, j++)
+        {
+            conditions[j] = new FirstCondition(i, Bound.Upper);
         }
 
         return GetConditions(conditions);

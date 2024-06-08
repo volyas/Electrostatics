@@ -12,6 +12,24 @@ namespace DirectProblem;
 public class Grids
 {
     private static readonly GridBuilder2D GridBuilder = new GridBuilder2D();
+    public static Grid<Node2D> BaseGrid()
+    {
+        var grid = GridBuilder
+            .SetRAxis(new AxisSplitParameter(new[]
+                    { 0d, 2d },
+                    new UniformSplitter(1)
+                ))
+            .SetZAxis(new AxisSplitParameter(new[]
+                    { 0d, 2d},
+                    new UniformSplitter(1))
+            )
+            .SetAreas(new Area[]
+            {
+                new(0, new Node2D(0d, 0d), new Node2D(2d, 2d))
+            })
+            .Build();
+        return grid;
+    }
     public static Grid<Node2D> GetModel1()
     {
         var grid = GridBuilder

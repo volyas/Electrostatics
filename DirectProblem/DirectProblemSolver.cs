@@ -40,6 +40,7 @@ public class DirectProblemSolver
                 new LocalMatrixAssembler(_grid),
                 _materialFactory
             );
+        _localAssembler.SetGrid(_grid);
     }
     
 
@@ -91,7 +92,7 @@ public class DirectProblemSolver
     {
         _equation = _globalAssembler
             .AssembleEquation()
-            .ApplySource(_sources)
+            //.ApplySource(_sources)
             .ApplyFirstConditions(_firstConditions)
             .BuildEquation();
 

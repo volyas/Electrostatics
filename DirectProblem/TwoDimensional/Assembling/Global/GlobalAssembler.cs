@@ -56,12 +56,15 @@ public class GlobalAssembler<TNode>
             new Vector(_grid.Nodes.Length),
             new Vector(_grid.Nodes.Length)
         );
-
+        globalMatrix.Copy(_equation.Matrix);
+        _equation.RightPart.Clear();
         foreach (var element in _grid)
         {
             var localMatrix = _localAssembler.AssembleMatrix(element);
+            var localVector = _localAssembler.AssembleVector(element);
 
             _inserter.InsertMatrix(_equation.Matrix, localMatrix);
+            _inserter.InsertVector(_equation.RightPart, localVector);
         }
 
         return this;

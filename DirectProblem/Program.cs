@@ -12,7 +12,7 @@ using System.Globalization;
 Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
 
 var gridBuilder2D = new GridBuilder2D();
-var grid = Grids.GetModel11();
+var grid = Grids.BaseGrid();
  
 
 var gridO = new GridIO("../DirectProblem/Results/");
@@ -26,7 +26,7 @@ gridO.WriteNodes(grid, "rz.dat");
 //);
 var materialFactory = new MaterialFactory
 (
-    new List<double> { 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1 }
+    new List<double> { 1d, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1 }
 );
 var current = 1d;
 
@@ -44,19 +44,19 @@ var current = 1d;
 //    centersZ[i] = (sources[i].Point.Z + receiverLines[i].PointN.Z) / 2;
 //}
 
-var sources = new Source[10];
-var receiverLines = new ReceiverLine[sources.Length];
-var potentialDifferences = new double[sources.Length];
-var centersZ = new double[sources.Length];
-for (var i = 0; i < sources.Length; i++)
-{
-    sources[i] = new Source(new Node2D(0.05, -2 - 0.5 * i), current);
-    receiverLines[i] = new ReceiverLine(
-        new Node2D(sources[i].Point.R, sources[i].Point.Z - 0.5),
-        new Node2D(sources[i].Point.R, sources[i].Point.Z - 1)
-    );
-    centersZ[i] = (sources[i].Point.Z + receiverLines[i].PointN.Z) / 2;
-}
+//var sources = new Source[10];
+//var receiverLines = new ReceiverLine[sources.Length];
+//var potentialDifferences = new double[sources.Length];
+//var centersZ = new double[sources.Length];
+//for (var i = 0; i < sources.Length; i++)
+//{
+//    sources[i] = new Source(new Node2D(0.05, -2 - 0.5 * i), current);
+//    receiverLines[i] = new ReceiverLine(
+//        new Node2D(sources[i].Point.R, sources[i].Point.Z - 0.5),
+//        new Node2D(sources[i].Point.R, sources[i].Point.Z - 1)
+//    );
+//    centersZ[i] = (sources[i].Point.Z + receiverLines[i].PointN.Z) / 2;
+//}
 //for (var i = 0; i < sources.Length; i++)
 //{
 //    sources[i] = new Source(new Node2D(0.05, -1 - 1 * i), current);
@@ -77,35 +77,43 @@ var conditions = firstBoundaryProvider.GetConditions(grid.Nodes.RLength - 1, gri
 var directProblemSolver = new DirectProblemSolver();
 
 var resultO = new ResultIO("../DirectProblem/Results/");
-
-for (var i = 0; i < sources.Length; i++)
-{
-    var solution = directProblemSolver
+var solution = directProblemSolver
                 .SetGrid(grid)
                 .SetMaterials(materialFactory)
-                .SetSource(sources[i])
-                ////.SetSource(sources[33])
-                //.SetSource(sources[5])
-                //.SetSource(new Source(new Node2D(0.05, -128), 1))
                 .SetFirstConditions(conditions)
                 .Solve();
+var femSolution = new FEMSolution(grid, solution, localBasisFunctionsProvider);
+var qValue = femSolution.Calculate(new Node2D(1.25, 1.25));
+Console.WriteLine(qValue);
 
-    if (i == 31)
-    {
-        resultO.WriteBinaryResult(solution, "v2.dat");
-    }
+//for (var i = 0; i < sources.Length; i++)
+//{
+//    var solution = directProblemSolver
+//                .SetGrid(grid)
+//                .SetMaterials(materialFactory)
+//                .SetSource(sources[i])
+//                ////.SetSource(sources[33])
+//                //.SetSource(sources[5])
+//                //.SetSource(new Source(new Node2D(0.05, -5), 1))
+//                .SetFirstConditions(conditions)
+//                .Solve();
 
-    var femSolution = new FEMSolution(grid, solution, localBasisFunctionsProvider);
+//    if (i == 31)
+//    {
+//        resultO.WriteBinaryResult(solution, "v2.dat");
+//    }
 
-    var potentialM = femSolution.Calculate(receiverLines[i].PointM);
-    var potentialN = femSolution.Calculate(receiverLines[i].PointN);
+//    var femSolution = new FEMSolution(grid, solution, localBasisFunctionsProvider);
 
-    //var potential = femSolution.Calculate(new Node2D(0.1, -130));
+//    var potentialM = femSolution.Calculate(receiverLines[i].PointM);
+//    var potentialN = femSolution.Calculate(receiverLines[i].PointN);
 
-    potentialDifferences[i] = potentialM - potentialN;
+//    //var potential = femSolution.Calculate(new Node2D(0.1, -130));
 
-    CourseHolder.GetInfo(i, 0);
-}
+//    potentialDifferences[i] = potentialM - potentialN;
+
+//    CourseHolder.GetInfo(i, 0);
+//}
 
 //для вычисления значения в точке
 
@@ -117,6 +125,7 @@ for (var i = 0; i < sources.Length; i++)
 //    .Solve();
 //resultO.WriteBinaryResult(solution, "v2.dat");
 //var femSolution = new FEMSolution(grid, solution, localBasisFunctionsProvider);
+
 //for (var i = 0; i < sources.Length; i++)
 //{
 //    potentialDifferences[i] = femSolution.Calculate(new Node2D(0.1, -10 + i)); //не разности, а просто потенциалы
@@ -125,4 +134,4 @@ for (var i = 0; i < sources.Length; i++)
 
 //
 
-resultO.WriteDirectProblemResult($"potentialDifferences.txt", potentialDifferences, centersZ);
+//resultO.WriteDirectProblemResult($"potentialDifferences.txt", potentialDifferences, centersZ);

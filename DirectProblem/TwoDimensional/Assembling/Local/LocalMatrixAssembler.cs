@@ -19,6 +19,7 @@ public class LocalMatrixAssembler : ILocalMatrixAssembler
     private readonly Matrix _stiffnessZ = new(2);
     private readonly Matrix _massR = new(2);
     private readonly Matrix _massZ = new(2);
+    private readonly Matrix _mass = new(4);
 
     public LocalMatrixAssembler
     (
@@ -76,7 +77,22 @@ public class LocalMatrixAssembler : ILocalMatrixAssembler
 
         return _stiffnessZ;
     }
+    public Matrix AssembleMassMatrix(Element element)
+    {
+        var massR = AssembleMassR(element);
+        var massZ = AssembleMassZ(element);
 
+        for (var i = 0; i < element.NodesIndexes.Length; i++)
+        {
+            for (var j = 0; j <= i; j++)
+            {
+                _mass[i, j] = massR[GetMuIndex(i), GetMuIndex(j)] * massZ[GetNuIndex(i), GetNuIndex(j)];
+                _mass[j, i] = _mass[i, j];
+            }
+        }
+
+        return _mass;
+    }
     private Matrix AssembleMassR(Element element)
     {
         Matrix.Multiply(Math.Pow(element.Length, 2) / 12d,
