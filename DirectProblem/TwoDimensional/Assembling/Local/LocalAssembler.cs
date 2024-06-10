@@ -24,7 +24,7 @@ public class LocalAssembler : ILocalAssembler
     {
         _localMatrixAssembler = localMatrixAssembler;
         _materialFactory = materialFactory;
-        _b = node => - Math.Exp(node.Z);
+        _b = node => 2d;
         _buffer = new Vector(4);
         _bufferVector = new Vector(4);
     }

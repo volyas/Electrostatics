@@ -16,8 +16,8 @@ public class FirstBoundaryProvider
     public FirstBoundaryProvider(Grid<Node2D> grid)
     {
         _grid = grid;
-        _u = node => Math.Exp(node.Z);
-        //_u = node => node.R * node.R - 2 * (node.Z * node.Z);
+        //_u = node => node.Z;
+        _u = node => node.R * node.R - 2 * (node.Z * node.Z);
     }
 
     public FirstConditionValue[] GetConditions(FirstCondition[] conditions)

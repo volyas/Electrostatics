@@ -17,11 +17,11 @@ public class Grids
         var grid = GridBuilder
             .SetRAxis(new AxisSplitParameter(new[]
                     { 0d, 2d },
-                    new UniformSplitter(1)
+                    new UniformSplitter(8)
                 ))
             .SetZAxis(new AxisSplitParameter(new[]
                     { 0d, 2d},
-                    new UniformSplitter(1))
+                    new UniformSplitter(8))
             )
             .SetAreas(new Area[]
             {
